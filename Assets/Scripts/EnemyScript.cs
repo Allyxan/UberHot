@@ -8,7 +8,10 @@ public class EnemyScript : MonoBehaviour
     Animator anim;
     public bool dead;
     public Transform weaponHolder;
-
+    public GameObject Camera;
+    public float EnemyTurnSpeed = 2.0f;
+    public float EnemyRunSpeed = 1.0f;
+    public float distance = 4.0f;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -22,9 +25,14 @@ public class EnemyScript : MonoBehaviour
     void Update()
     {
         if (!dead)
-            transform.LookAt(new Vector3(Camera.main.transform.position.x, 0, Camera.main.transform.position.z));
-
-
+        {
+            float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
+            transform.LookAt(new Vector3(Camera.transform.position.x, 0, Camera.transform.position.z));
+            if (NewDistance > distance)
+            {
+                transform.Translate(0, 0, EnemyRunSpeed * Time.deltaTime);
+            }
+        }
     }
 
     public void Ragdoll()
