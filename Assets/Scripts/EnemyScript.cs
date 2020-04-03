@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [SelectionBase]
 public class EnemyScript : MonoBehaviour
@@ -12,14 +13,14 @@ public class EnemyScript : MonoBehaviour
     public float EnemyTurnSpeed = 2.0f;
     public float EnemyRunSpeed = 1.0f;
     public float distance = 4.0f;
+    NavMeshAgent navMeshAgent;
     void Start()
     {
         anim = GetComponent<Animator>();
         StartCoroutine(RandomAnimation());
-
+        navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             weaponHolder.GetComponentInChildren<WeaponScript>().active = false;
-
     }
 
     void Update()
@@ -30,8 +31,19 @@ public class EnemyScript : MonoBehaviour
             transform.LookAt(new Vector3(Camera.transform.position.x, 0, Camera.transform.position.z));
             if (NewDistance > distance)
             {
-                transform.Translate(0, 0, EnemyRunSpeed * Time.deltaTime);
+                //transform.Translate(0, 0, EnemyRunSpeed * Time.deltaTime);
+                navMeshAgent.enabled = true;
+                navMeshAgent.SetDestination(Camera.transform.position);
             }
+            else
+            {
+                navMeshAgent.enabled = false;
+            }
+        }
+        else
+        {
+            navMeshAgent.enabled = false;
+            navMeshAgent.velocity = Vector3.zero;
         }
     }
 
