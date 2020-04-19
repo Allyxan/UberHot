@@ -22,8 +22,8 @@ TagManager:
   - DoorRes
   - DoubleDoor
   - AdmDoor
-  - 
-  - 
+  - Enemy
+  - Wall/LargeObject
   - 
   - 
   - 

@@ -9,6 +9,7 @@ public class BulletMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        StartCoroutine(SelfDestruct());
     }
     void Update()
     {
@@ -19,13 +20,15 @@ public class BulletMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             BodyPartScript bp = collision.gameObject.GetComponent<BodyPartScript>();
-
-            //if (!bp.enemy.dead)
-                Instantiate(SuperHotScript.instance.hitParticlePrefab, transform.position, transform.rotation);
-
+            Instantiate(SuperHotScript.instance.hitParticlePrefab, transform.position, transform.rotation);
             bp.HidePartAndReplace();
             bp.enemy.Ragdoll();
         }
+        Destroy(gameObject);
+    }
+    IEnumerator SelfDestruct()
+    {
+        yield return new WaitForSeconds(3f);
         Destroy(gameObject);
     }
 }

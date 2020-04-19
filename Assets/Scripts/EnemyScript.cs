@@ -15,6 +15,7 @@ public class EnemyScript : MonoBehaviour
     public float distance = 4.0f;
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
+    int layerMask;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -22,6 +23,7 @@ public class EnemyScript : MonoBehaviour
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             weaponHolder.GetComponentInChildren<WeaponScript>().active = false;
+        layerMask = 1 << 15;
     }
 
     void Update()
@@ -32,7 +34,7 @@ public class EnemyScript : MonoBehaviour
             float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
             if (NewDistance > distance)
             {
-                navMeshAgent.enabled = true;
+                navMeshAgent.enabled = true;//true posle testov false dlya testov
                 navMeshAgent.SetDestination(Camera.transform.position);
             }
             else
@@ -45,24 +47,27 @@ public class EnemyScript : MonoBehaviour
             navMeshAgent.enabled = false;
             navMeshAgent.velocity = Vector3.zero;
         }
-        RaycastHit hit;
+        RaycastHit hit; RaycastHit enemyCheck;
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null && !dead)
         {
-            Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out hit, 100);
-            if (!(hit.transform.CompareTag("Enemy")))
+            Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
+            //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
+            if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
             {
-                if (hit.transform.CompareTag("Player"))
+                readyToShoot = false;
+            }
+            else
+            {
+                if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out hit, 100))
                 {
-                    readyToShoot = true;
-                }
-                else
-                {
-                    readyToShoot = false;
+                    if (hit.transform.CompareTag("Player"))
+                    {
+                        readyToShoot = true;
+                    }
                 }
             }
         }
     }
-
     public void Ragdoll()
     {
         anim.enabled = false;
@@ -92,7 +97,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (dead)
             return;
-        if (weaponHolder.GetComponentInChildren<WeaponScript>() != null && readyToShoot)
+        if (weaponHolder.GetComponentInChildren<WeaponScript>() != null && readyToShoot == true)
         {
             weaponHolder.GetComponentInChildren<WeaponScript>().Shoot(GetComponentInChildren<ParticleSystem>().transform.position, 
                 transform.rotation, true);
