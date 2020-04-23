@@ -22,7 +22,6 @@ public class WeaponScript : MonoBehaviour
     public float reloadTime = .3f;
     public int bulletAmount = 6;
     Vector3 recoil = new Vector3 (-30f, 0, 0);
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -31,7 +30,6 @@ public class WeaponScript : MonoBehaviour
 
         ChangeSettings();
     }
-
     void ChangeSettings()
     {
         if (transform.parent != null)
@@ -41,7 +39,6 @@ public class WeaponScript : MonoBehaviour
         rb.interpolation = (SuperHotScript.instance.weapon == this) ? RigidbodyInterpolation.None : RigidbodyInterpolation.Interpolate;
         collider.isTrigger = (SuperHotScript.instance.weapon == this);
     }
-
     public void Shoot(Vector3 pos,Quaternion rot, bool isEnemy)
     {
         if (reloading)
@@ -107,9 +104,7 @@ public class WeaponScript : MonoBehaviour
 
         rb.AddForce((Camera.main.transform.position - transform.position) * 2, ForceMode.Impulse);
         rb.AddForce(Vector3.up * 2, ForceMode.Impulse);
-
     } 
-
     IEnumerator Reload()
     {
         if (SuperHotScript.instance.weapon != this)
@@ -119,21 +114,17 @@ public class WeaponScript : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
         reloading = false;
     }
-
     private void OnCollisionEnter(Collision collision)
     {
-
         if (collision.gameObject.CompareTag("Enemy") && collision.relativeVelocity.magnitude < 15)
         {
             BodyPartScript bp = collision.gameObject.GetComponent<BodyPartScript>();
             if (!bp.enemy.dead)
-                Instantiate(SuperHotScript.instance.hitParticlePrefab, transform.position, transform.rotation);
+            Instantiate(SuperHotScript.instance.hitParticlePrefab, transform.position, transform.rotation);
             //bp.enemy.Release();
             //bp.HidePartAndReplace();
             //bp.enemy.Ragdoll();
             bp.enemy.WeaponRelease();
         }
-
     }
-
 }

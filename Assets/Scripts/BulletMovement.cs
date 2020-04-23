@@ -25,6 +25,10 @@ public class BulletMovement : MonoBehaviour
             bp.enemy.Ragdoll();
         }
         Destroy(gameObject);
+        if(collision.gameObject.CompareTag("Player"))
+        {
+            //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
     }
     IEnumerator SelfDestruct()
     {

@@ -10,9 +10,7 @@ public class EnemyScript : MonoBehaviour
     public bool dead;
     public Transform weaponHolder;
     public GameObject Camera;
-    public float EnemyTurnSpeed = 2.0f;
-    public float EnemyRunSpeed = 1.0f;
-    public float distance = 4.0f;
+    public float distance = 3.0f;
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask;
@@ -30,16 +28,18 @@ public class EnemyScript : MonoBehaviour
     {
         if (!dead & BreakResDoorScript.instance.breakResseptionDoor == true)
         {
-            transform.LookAt(new Vector3(Camera.transform.position.x, 0, Camera.transform.position.z));
+            navMeshAgent.enabled = true;
+            transform.LookAt(new Vector3(Camera.transform.position.x, Camera.transform.position.y-1.5f, Camera.transform.position.z));
             float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
             if (NewDistance > distance)
             {
-                navMeshAgent.enabled = true;//true posle testov false dlya testov
                 navMeshAgent.SetDestination(Camera.transform.position);
             }
             else
             {
-                navMeshAgent.enabled = false;
+                Vector3 direction = transform.position - Camera.transform.position;
+                Vector3 FallBack = transform.position + direction;
+                navMeshAgent.SetDestination(FallBack);
             }
         }
         else
@@ -47,25 +47,36 @@ public class EnemyScript : MonoBehaviour
             navMeshAgent.enabled = false;
             navMeshAgent.velocity = Vector3.zero;
         }
-        RaycastHit hit; RaycastHit enemyCheck;
-        if (weaponHolder.GetComponentInChildren<WeaponScript>() != null && !dead)
+        RaycastHit wallCheck; RaycastHit enemyCheck;
+        if (!dead)
         {
-            Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
-            //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
-            if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
+            if(weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             {
-                readyToShoot = false;
-            }
-            else
-            {
-                if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out hit, 100))
+                Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
+                //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
+                if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
                 {
-                    if (hit.transform.CompareTag("Player"))
+                    readyToShoot = false;
+                }
+                else
+                {
+                    if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out wallCheck, 100))
                     {
-                        readyToShoot = true;
+                        if (wallCheck.transform.CompareTag("Wall"))
+                        {
+                            readyToShoot = false;
+                        }
+                        if (wallCheck.transform.CompareTag("Player"))
+                        {
+                            readyToShoot = true;
+                        }
                     }
                 }
             }
+            /*else
+            {
+                
+            }*/
         }
     }
     public void Ragdoll()

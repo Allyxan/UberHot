@@ -6,10 +6,7 @@ using DG.Tweening;
 
 public class SuperHotScript : MonoBehaviour
 {
-
     public static SuperHotScript instance;
-
-    public float charge;
     public bool canShoot = true;
     public bool action;
     public GameObject bullet;
