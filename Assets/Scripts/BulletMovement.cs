@@ -13,7 +13,10 @@ public class BulletMovement : MonoBehaviour
     }
     void Update()
     {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        if(Cursor.visible == false)
+        {
+            transform.position += transform.forward * speed * Time.deltaTime;
+        }
     }
     private void OnCollisionEnter(Collision collision)
     {

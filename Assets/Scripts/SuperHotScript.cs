@@ -38,53 +38,56 @@ public class SuperHotScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if(Cursor.visible == false)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-        }
-
-        if (canShoot)
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                StopCoroutine(ActionE(.03f));
-                StartCoroutine(ActionE(.03f));
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            }
+
+            if (canShoot)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    StopCoroutine(ActionE(.03f));
+                    StartCoroutine(ActionE(.03f));
+                    if (weapon != null)
+                        weapon.Shoot(SpawnPos(), Camera.main.transform.rotation, false);
+                }
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                StopCoroutine(ActionE(.4f));
+                StartCoroutine(ActionE(.4f));
+
                 if (weapon != null)
-                    weapon.Shoot(SpawnPos(), Camera.main.transform.rotation, false);
+                {
+                    weapon.Throw();
+                    weapon = null;
+                }
             }
-        }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            StopCoroutine(ActionE(.4f));
-            StartCoroutine(ActionE(.4f));
-
-            if(weapon != null)
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
             {
-                weapon.Throw();
-                weapon = null;
+                if (Input.GetMouseButtonDown(0) && weapon == null)
+                {
+                    hit.transform.GetComponent<WeaponScript>().Pickup();
+                }
             }
+
+            float x = Input.GetAxisRaw("Horizontal");
+            float y = Input.GetAxisRaw("Vertical");
+
+            float time = (x != 0 || y != 0) ? 1f : .01f;
+            float lerpTime = (x != 0 || y != 0) ? .05f : .5f;
+
+            time = action ? 1 : time;
+            lerpTime = action ? .1f : lerpTime;
+
+            Time.timeScale = Mathf.Lerp(Time.timeScale, time, lerpTime);
         }
-
-        RaycastHit hit;
-        if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
-        {
-            if (Input.GetMouseButtonDown(0) && weapon == null)
-            {
-                hit.transform.GetComponent<WeaponScript>().Pickup();
-            }
-        }
-
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
-
-        float time = (x != 0 || y != 0) ? 1f : .01f;
-        float lerpTime = (x != 0 || y != 0) ? .05f : .5f;
-
-        time = action ? 1 : time;
-        lerpTime = action ? .1f : lerpTime;
-
-        Time.timeScale = Mathf.Lerp(Time.timeScale, time, lerpTime);
     }
 
     IEnumerator ActionE(float time)
