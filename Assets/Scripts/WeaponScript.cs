@@ -116,7 +116,7 @@ public class WeaponScript : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") && collision.relativeVelocity.magnitude < 15)
+        if (collision.gameObject.CompareTag("Enemy") && collision.relativeVelocity.magnitude > 8)
         {
             BodyPartScript bp = collision.gameObject.GetComponent<BodyPartScript>();
             if (!bp.enemy.dead)
