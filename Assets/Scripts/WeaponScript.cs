@@ -50,7 +50,16 @@ public class WeaponScript : MonoBehaviour
         if(SuperHotScript.instance.weapon == this)
             bulletAmount--;
 
-        GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
+        if(isEnemy == false)
+        {
+            GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
+            bullet.tag = "PlayerBullet";
+        }
+
+        if(isEnemy == true)
+        {
+            GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
+        }
 
         if (GetComponentInChildren<ParticleSystem>() != null)
             GetComponentInChildren<ParticleSystem>().Play();

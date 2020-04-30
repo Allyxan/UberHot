@@ -9,6 +9,13 @@ public class PauseGame : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject crossHair;
     public GameObject Player;
+    GameObject fadeToBlack;
+    Animator ani;
+    void Start()
+    {
+        fadeToBlack = GameObject.Find("FadeToBlack");
+        ani = fadeToBlack.GetComponent<Animator>();
+    }
     void Update()
     {
         if (gamePaused == true)
@@ -58,8 +65,15 @@ public class PauseGame : MonoBehaviour
     }
     public void Quit()
     {
-        AudioListener.pause = false;
         Time.timeScale = 1;
+        AudioListener.pause = false;
+        StartCoroutine(QuitWaiting());
+    }
+    IEnumerator QuitWaiting()
+    {
+        pauseMenu.SetActive(false);
+        ani.SetTrigger("Fade");
+        yield return new WaitForSecondsRealtime(1f);
 #if UNITY_EDITOR
         //UnityEditor.EditorApplication.isPlaying = false;
         SceneManager.LoadScene(0);
