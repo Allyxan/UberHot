@@ -9,13 +9,14 @@ public class EnemyScript : MonoBehaviour
     Animator anim;
     public bool dead;
     public Transform weaponHolder;
-    public GameObject Camera;
+    GameObject Camera;
     public float distance = 3.0f;
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask;
     void Start()
     {
+        Camera = GameObject.FindGameObjectWithTag("MainCamera");
         anim = GetComponent<Animator>();
         StartCoroutine(RandomAnimation());
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
@@ -81,10 +82,12 @@ public class EnemyScript : MonoBehaviour
     }
     public void Ragdoll()
     {
+        tag = "DeadEnemy";
         anim.enabled = false;
         BodyPartScript[] parts = GetComponentsInChildren<BodyPartScript>();
         foreach (BodyPartScript bp in parts)
         {
+            bp.tag = "DeadEnemy";
             bp.rb.isKinematic = false;
             bp.rb.interpolation = RigidbodyInterpolation.Interpolate;
         }

@@ -8,6 +8,11 @@ public class ForSettingsMenu : MonoBehaviour
     public Slider masterVolume;
     public Slider musicVolume;
     public AudioMixer audioMixer;
+    void Update()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
     void Start()
     {
         masterVolume.value = PlayerPrefs.GetFloat("MasterVolume");

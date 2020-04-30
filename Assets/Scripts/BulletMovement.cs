@@ -20,7 +20,7 @@ public class BulletMovement : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy") && CompareTag("PlayerBullet"))
         {
             BodyPartScript bp = collision.gameObject.GetComponent<BodyPartScript>();
             Instantiate(SuperHotScript.instance.hitParticlePrefab, transform.position, transform.rotation);
@@ -28,7 +28,7 @@ public class BulletMovement : MonoBehaviour
             bp.enemy.Ragdoll();
         }
         Destroy(gameObject);
-        if(collision.gameObject.CompareTag("Player"))
+        if(collision.gameObject.CompareTag("Player") && !(CompareTag("PlayerBullet")))
         {
             //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
         }

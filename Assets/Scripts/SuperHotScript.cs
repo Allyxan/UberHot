@@ -99,10 +99,9 @@ public class SuperHotScript : MonoBehaviour
 
     public void ReloadUI(float time)
     {
+        indicator.transform.eulerAngles = new Vector3(0, 0, 45);
         indicator.transform.DORotate(new Vector3(0, 0, 90), time, RotateMode.LocalAxisAdd).SetEase(Ease.Linear).OnComplete(() => indicator.transform.DOPunchScale(Vector3.one / 3, .2f, 10, 1).SetUpdate(true));
     }
-
-
     Vector3 SpawnPos()
     {
         return Camera.main.transform.position + (Camera.main.transform.forward * .5f) + (Camera.main.transform.up * -.02f);
