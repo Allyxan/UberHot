@@ -6,10 +6,13 @@ public class ForEnemySystemAKAGameEnd : MonoBehaviour
 {
     GameObject fadeToBlack;
     Animator ani;
+    public AudioClip UberHot;
+    public AudioSource audio;
     void Start()
     {
         fadeToBlack = GameObject.Find("FadeToBlack");
         ani = fadeToBlack.GetComponent<Animator>();
+        audio = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -17,12 +20,15 @@ public class ForEnemySystemAKAGameEnd : MonoBehaviour
         {
             Time.timeScale = 1;
             StartCoroutine(QuitWaiting());
+            
         }
     }
     IEnumerator QuitWaiting()
     {
+        audio.PlayOneShot(UberHot, 0.7F);
         ani.SetTrigger("Fade");
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(5f);
         SceneManager.LoadScene(0);
+        
     }
 }

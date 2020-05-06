@@ -14,6 +14,8 @@ public class EnemyScript : MonoBehaviour
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask;
+
+
     void Start()
     {
         Camera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -23,6 +25,7 @@ public class EnemyScript : MonoBehaviour
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             weaponHolder.GetComponentInChildren<WeaponScript>().active = false;
         layerMask = 1 << 15;
+
     }
 
     void Update()
@@ -99,6 +102,22 @@ public class EnemyScript : MonoBehaviour
             w.Release();
         }
     }
+    public void Smert()
+    {
+        GameObject cur = GameObject.Find("MyObject");
+        BodyPartScript BodyPartScript = cur.GetComponent<BodyPartScript>();
+        int current = BodyPartScript._curHealth;
+            tag = "DeadEnemy";
+            anim.enabled = false;
+           if (current == 0)
+            dead = true;
+
+        if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
+        {
+            WeaponScript w = weaponHolder.GetComponentInChildren<WeaponScript>();
+            w.Release();
+        }
+    }
     public void WeaponRelease()
     {
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
@@ -123,4 +142,5 @@ public class EnemyScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(Random.Range(.1f, .5f));
         anim.enabled = true;
     }
+    
 }

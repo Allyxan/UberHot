@@ -81,7 +81,7 @@ public class SuperHotScript : MonoBehaviour
             float y = Input.GetAxisRaw("Vertical");
 
             float time = (x != 0 || y != 0) ? 1f : .01f;
-            float lerpTime = (x != 0 || y != 0) ? .05f : .5f;
+            float lerpTime = (x != 0 || y != 0 || y < 0.6) ? .05f : .5f;
 
             time = action ? 1 : time;
             lerpTime = action ? .1f : lerpTime;
