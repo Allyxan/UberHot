@@ -6,6 +6,7 @@ using UnityEngine.AI;
 [SelectionBase]
 public class EnemyScript : MonoBehaviour
 {
+    bool testAnim = false;
     Animator anim;
     public bool dead;
     public Transform weaponHolder;
@@ -27,57 +28,69 @@ public class EnemyScript : MonoBehaviour
 
     void Update()
     {
-        if (!dead & BreakResDoorScript.instance.breakResseptionDoor == true)
+        if (Input.GetKeyDown(KeyCode.K))
         {
-            navMeshAgent.enabled = true;
-            transform.LookAt(new Vector3(Camera.transform.position.x, Camera.transform.position.y-1.5f, Camera.transform.position.z));
-            float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
-            if (NewDistance > distance)
-            {
-                navMeshAgent.SetDestination(Camera.transform.position);
-            }
-            else
-            {
-                Vector3 direction = transform.position - Camera.transform.position;
-                Vector3 FallBack = transform.position + direction;
-                navMeshAgent.SetDestination(FallBack);
-            }
-        }
-        else
-        {
+            anim.SetBool("Test_anim", true);
+            testAnim = true;
             navMeshAgent.enabled = false;
-            navMeshAgent.velocity = Vector3.zero;
+            StartCoroutine(PlaySecretKey());
         }
-        RaycastHit wallCheck; RaycastHit enemyCheck;
-        if (!dead)
+        if (testAnim == false) anim.SetBool("Test_anim", false);
+
+        if (testAnim == false)
         {
-            if(weaponHolder.GetComponentInChildren<WeaponScript>() != null)
+            if (!dead & BreakResDoorScript.instance.breakResseptionDoor == true)
             {
-                Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
-                //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
-                if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
+                navMeshAgent.enabled = true;
+                transform.LookAt(new Vector3(Camera.transform.position.x, Camera.transform.position.y - 1.5f, Camera.transform.position.z));
+                float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
+                if (NewDistance > distance)
                 {
-                    readyToShoot = false;
+                    navMeshAgent.SetDestination(Camera.transform.position);
                 }
                 else
                 {
-                    if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out wallCheck, 100))
+                    Vector3 direction = transform.position - Camera.transform.position;
+                    Vector3 FallBack = transform.position + direction;
+                    navMeshAgent.SetDestination(FallBack);
+                }
+            }
+            else
+            {
+                navMeshAgent.enabled = false;
+                navMeshAgent.velocity = Vector3.zero;
+            }
+            RaycastHit wallCheck; RaycastHit enemyCheck;
+            if (!dead)
+            {
+                if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
+                {
+                    Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
+                    //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
+                    if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
                     {
-                        if (wallCheck.transform.CompareTag("Wall"))
+                        readyToShoot = false;
+                    }
+                    else
+                    {
+                        if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out wallCheck, 100))
                         {
-                            readyToShoot = false;
-                        }
-                        if (wallCheck.transform.CompareTag("Player"))
-                        {
-                            readyToShoot = true;
+                            if (wallCheck.transform.CompareTag("Wall"))
+                            {
+                                readyToShoot = false;
+                            }
+                            if (wallCheck.transform.CompareTag("Player"))
+                            {
+                                readyToShoot = true;
+                            }
                         }
                     }
                 }
+                /*else
+                {
+
+                }*/
             }
-            /*else
-            {
-                
-            }*/
         }
     }
     public void Ragdoll()
@@ -113,7 +126,7 @@ public class EnemyScript : MonoBehaviour
             return;
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null && readyToShoot == true)
         {
-            weaponHolder.GetComponentInChildren<WeaponScript>().Shoot(GetComponentInChildren<ParticleSystem>().transform.position, 
+            weaponHolder.GetComponentInChildren<WeaponScript>().Shoot(GetComponentInChildren<ParticleSystem>().transform.position,
                 transform.rotation, true);
         }
     }
@@ -122,5 +135,12 @@ public class EnemyScript : MonoBehaviour
         anim.enabled = false;
         yield return new WaitForSecondsRealtime(Random.Range(.1f, .5f));
         anim.enabled = true;
+    }
+
+    IEnumerator PlaySecretKey()
+    {
+        yield return new WaitForSecondsRealtime(5f);
+        testAnim = false;
+        navMeshAgent.enabled = true;
     }
 }

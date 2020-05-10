@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,6 +9,7 @@ using UnityEditor;
 
 public class Controller : MonoBehaviour
 {
+    bool testAnim = false;
 
     public static Controller Instance { get; protected set; }
 
@@ -98,6 +100,16 @@ public class Controller : MonoBehaviour
             Vector3 move = Vector3.zero;
             if (!m_IsPaused && !LockControl)
             {
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                testAnim = true;
+                StartCoroutine(PlaySecretKey());
+            }
+
+            if (testAnim == false)
+            {
+
                 if (m_Grounded && Input.GetButtonDown("Jump"))
                 {
                     m_VerticalSpeed = JumpSpeed;
@@ -127,6 +139,7 @@ public class Controller : MonoBehaviour
                 move = transform.TransformDirection(move);
                 m_CharacterController.Move(move);
 
+            }
                 // Turn player
                 float turnPlayer = Input.GetAxis("Mouse X") * MouseSensitivity;
                 m_HorizontalAngle = m_HorizontalAngle + turnPlayer;
@@ -159,6 +172,12 @@ public class Controller : MonoBehaviour
             var flag = m_CharacterController.Move(verticalMove);
             if ((flag & CollisionFlags.Below) != 0)
                 m_VerticalSpeed = 0;
+    }
+
+    IEnumerator PlaySecretKey()
+    {
+        yield return new WaitForSecondsRealtime(5f);
+        testAnim = false;
     }
     /*
     public void DisplayCursor(bool display)
