@@ -4,44 +4,39 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public GameObject target;
-    public float coolDown;
-    public float attackTimer;
+    public float Distant = 5f;
+    //public bool dead;
+    //public Transform weaponHolder;
+    //bool readyToShoot = false;
+    public int BB = 0;
+   
+    
+
     // Start is called before the first frame update
     void Start()
     {
-        attackTimer = 0;
-        if (coolDown == 0)
-            coolDown = 2.0f;
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (attackTimer > 0)
-            attackTimer -= Time.deltaTime;
-        if (attackTimer < 0)
-            attackTimer = 0;
-        if (Input.GetKeyUp(KeyCode.F))
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+        if(Physics.Raycast(ray,out hit, Distant))
         {
-            if (attackTimer == 0) 
-                 Attack();
+            BB = 1;
         }
-        attackTimer = coolDown;
+        BB = 0;
     }
-
-    private void Attack()
-    {
-        float distance = Vector3.Distance(target.transform.position, transform.position);
-        Vector3 dir = (target.transform.position - transform.position).normalized;
-        float direction = Vector3.Dot(dir, transform.forward);
-        if (distance < 2 && direction > 0)
-        {
-            Debug.Log("Player Attacking");
-            BodyPartScript eh = (BodyPartScript)target.GetComponent("BodyPartScript");
-            eh.AddjustCurrentHealth(0);
-            attackTimer = coolDown;
-        }
-
-    }
+    //public void Shoot()
+    //{
+    //    if (dead)
+    //        return;
+    //    if (weaponHolder.GetComponentInChildren<WeaponScript>() != null && readyToShoot == true)
+    //    {
+    //        weaponHolder.GetComponentInChildren<WeaponScript>().Shoot(GetComponentInChildren<ParticleSystem>().transform.position,
+    //            transform.rotation, true);
+    //    }
+    //}
 }

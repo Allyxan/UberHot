@@ -27,7 +27,7 @@ public class ForEnemySystemAKAGameEnd : MonoBehaviour
     {
         audio.PlayOneShot(UberHot, 0.7F);
         ani.SetTrigger("Fade");
-        yield return new WaitForSecondsRealtime(5f);
+        yield return new WaitForSecondsRealtime(1f);
         SceneManager.LoadScene(0);
         
     }
