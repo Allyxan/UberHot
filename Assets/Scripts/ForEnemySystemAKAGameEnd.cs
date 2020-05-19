@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 public class ForEnemySystemAKAGameEnd : MonoBehaviour
 {
     GameObject fadeToBlack;
+    public GameObject MenuManager;
+    public GameObject Player;
+    public TriggerScript triggerScript;
     Animator ani;
     void Start()
     {
@@ -13,8 +16,11 @@ public class ForEnemySystemAKAGameEnd : MonoBehaviour
     }
     void Update()
     {
-        if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+        if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0 && triggerScript.dontFinishTheGame == false)
         {
+            MenuManager.SetActive(false);
+            Player.GetComponent<SuperHotScript>().enabled = false;
+            Player.tag = "Untagged";
             Time.timeScale = 1;
             StartCoroutine(QuitWaiting());
         }

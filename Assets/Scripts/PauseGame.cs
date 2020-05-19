@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseGame : MonoBehaviour
 {
+    bool quitting = false;
     bool gamePaused = false;
     public GameObject pauseMenu;
     public GameObject crossHair;
@@ -28,7 +29,7 @@ public class PauseGame : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && quitting == false)
         {
             if (gamePaused == false)
             {
@@ -39,7 +40,6 @@ public class PauseGame : MonoBehaviour
                 Player.GetComponent<SuperHotScript>().enabled = false;
                 gamePaused = true;
                 crossHair.SetActive(false);
-                pauseMenu.SetActive(true);
             }
             else
             {
@@ -50,6 +50,8 @@ public class PauseGame : MonoBehaviour
 
     public void ResumeGame()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         pauseMenu.SetActive(false);
         crossHair.SetActive(true);
         Player.GetComponent<Controller>().enabled = true;
@@ -65,20 +67,20 @@ public class PauseGame : MonoBehaviour
     }
     public void Quit()
     {
+        Player.GetComponent<SuperHotScript>().enabled = false;
+        Player.tag = "Untagged";
         Time.timeScale = 1;
         AudioListener.pause = false;
         StartCoroutine(QuitWaiting());
     }
     IEnumerator QuitWaiting()
     {
+        quitting = true;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         pauseMenu.SetActive(false);
         ani.SetTrigger("Fade");
         yield return new WaitForSecondsRealtime(1f);
-#if UNITY_EDITOR
-        //UnityEditor.EditorApplication.isPlaying = false;
         SceneManager.LoadScene(0);
-#else
-        SceneManager.LoadScene(0);
-#endif
     }
 }

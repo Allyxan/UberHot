@@ -41,11 +41,11 @@ public class WeaponScript : MonoBehaviour
     }
     public void Shoot(Vector3 pos,Quaternion rot, bool isEnemy)
     {
-        if (reloading)
+        if (reloading || bulletAmount <= 0)
             return;
 
-        if (bulletAmount <= 0)
-            return;
+        //if (bulletAmount <= 0)
+        //   return;
 
         if(SuperHotScript.instance.weapon == this)
             bulletAmount--;
