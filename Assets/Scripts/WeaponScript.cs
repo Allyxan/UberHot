@@ -22,11 +22,20 @@ public class WeaponScript : MonoBehaviour
     public float reloadTime = .3f;
     public int bulletAmount = 6;
     Vector3 recoil = new Vector3 (-30f, 0, 0);
+
+    public AudioClip ZvukVistrela;
+    public AudioClip ZvukPustogoPistoleta;
+    public AudioClip Brosit;
+    public AudioClip Podniat;
+    public AudioSource audio;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
         renderer = GetComponent<Renderer>();
+        audio = GetComponent<AudioSource>();
 
         ChangeSettings();
     }
@@ -44,13 +53,25 @@ public class WeaponScript : MonoBehaviour
         if (reloading || bulletAmount <= 0)
             return;
 
+<<<<<<< HEAD
         //if (bulletAmount <= 0)
         //   return;
+=======
+        if (bulletAmount <= 0)
+        {
+            audio.PlayOneShot(ZvukPustogoPistoleta, 0.7F);
+            return;
+        }
+>>>>>>> Pola
 
-        if(SuperHotScript.instance.weapon == this)
+        if (SuperHotScript.instance.weapon == this)
+        {
+            audio.PlayOneShot(ZvukVistrela, 0.7F);
             bulletAmount--;
+            
+        }
 
-        if(isEnemy == false)
+            if (isEnemy == false)
         {
             GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
             bullet.tag = "PlayerBullet";
@@ -62,9 +83,12 @@ public class WeaponScript : MonoBehaviour
         }
 
         if (GetComponentInChildren<ParticleSystem>() != null)
+        {
             GetComponentInChildren<ParticleSystem>().Play();
+            audio.PlayOneShot(ZvukVistrela, 0.7F);
+        }
 
-        if(SuperHotScript.instance.weapon == this)
+            if (SuperHotScript.instance.weapon == this)
             StartCoroutine(Reload());
 
         Camera.main.transform.DOComplete();
@@ -87,6 +111,7 @@ public class WeaponScript : MonoBehaviour
         s.AppendCallback(() => ChangeSettings());
         s.AppendCallback(() => rb.AddForce(Camera.main.transform.forward * 10, ForceMode.Impulse));
         s.AppendCallback(() => rb.AddTorque(transform.transform.right + transform.transform.up * 20, ForceMode.Impulse));
+        audio.PlayOneShot(Brosit, 0.7F);
     }
 
     public void Pickup()
@@ -101,6 +126,7 @@ public class WeaponScript : MonoBehaviour
 
         transform.DOLocalMove(Vector3.zero, .25f).SetEase(Ease.OutBack).SetUpdate(true);
         transform.DOLocalRotate(Vector3.zero, .25f).SetUpdate(true);
+        audio.PlayOneShot(Podniat, 0.7F);
     }
 
     public void Release()

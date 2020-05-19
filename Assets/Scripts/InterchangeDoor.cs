@@ -6,10 +6,14 @@ public class InterchangeDoor : MonoBehaviour
 {
     Animator IntDoor;
     private bool IntOpened = false;
+
+    public AudioSource ZvukDver;
+
     void Start()
     {
         IntDoor = GetComponent<Animator>();
         IntDoor.enabled = false;
+        ZvukDver = GetComponent<AudioSource>();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -18,6 +22,7 @@ public class InterchangeDoor : MonoBehaviour
             IntDoor.enabled = true;
             IntOpened = true;
             StartCoroutine(DisableAnimation());
+            ZvukDver.Play();
         }
     }
     IEnumerator DisableAnimation()

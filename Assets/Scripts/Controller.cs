@@ -153,8 +153,8 @@ public class Controller : MonoBehaviour
 
             // Fall down / gravity
             m_VerticalSpeed = m_VerticalSpeed - 10.0f * Time.deltaTime;
-            if (m_VerticalSpeed < -10.0f)
-                m_VerticalSpeed = -10.0f; // max fall speed
+            if (m_VerticalSpeed < -15.0f)
+                m_VerticalSpeed = -15.0f; // max fall speed
             var verticalMove = new Vector3(0, m_VerticalSpeed * Time.deltaTime, 0);
             var flag = m_CharacterController.Move(verticalMove);
             if ((flag & CollisionFlags.Below) != 0)
