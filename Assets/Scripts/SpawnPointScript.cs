@@ -4,7 +4,7 @@ public class SpawnPointScript : MonoBehaviour
 {
     Animator animSpawn;
     public Transform SpawnPointPosition;
-    public float spawnTime = 3.0f;
+    public float spawnTime = 0.5f;
     public GameObject enemy;
     private Light forLight;
     void Start()

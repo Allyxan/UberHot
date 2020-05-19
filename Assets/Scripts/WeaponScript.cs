@@ -50,14 +50,19 @@ public class WeaponScript : MonoBehaviour
     }
     public void Shoot(Vector3 pos,Quaternion rot, bool isEnemy)
     {
-        if (reloading)
+        if (reloading || bulletAmount <= 0)
             return;
 
+<<<<<<< HEAD
         if (bulletAmount <= 0)
         {
             audio.PlayOneShot(ZvukPustogoPistoleta, 0.7F);
             return;
         }
+=======
+        //if (bulletAmount <= 0)
+        //   return;
+>>>>>>> AllyVetochka
 
         if (SuperHotScript.instance.weapon == this)
         {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BodyPartScript : MonoBehaviour
 {
+<<<<<<< HEAD
     public Rigidbody rb; //твердое тело
     public EnemyScript enemy; //противник
     public Renderer bodyPartRenderer; // доступ к телу
@@ -16,6 +17,13 @@ public class BodyPartScript : MonoBehaviour
 
 
     // Start is called before the first frame update
+=======
+    public Rigidbody rb;
+    public EnemyScript enemy;
+    public Renderer bodyPartRenderer;
+    public GameObject bodyPartPrefab;
+    public bool replaced; //bool StopUpdate = true;
+>>>>>>> AllyVetochka
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -24,26 +32,37 @@ public class BodyPartScript : MonoBehaviour
             maxHealth = 1;
         _curHealth = maxHealth;
     }
+<<<<<<< HEAD
 
     void Update()
     {
         AddjustCurrentHealth(_curHealth);
+=======
+    void Update()
+    {
+        /*if(StopUpdate && replaced)
+        {
+            StartCoroutine(FadeAway());
+            transform.parent.Translate(Vector3.down * Time.deltaTime, Space.World);
+        }*/
+>>>>>>> AllyVetochka
     }
     public void HidePartAndReplace()
     {
         if (replaced)
             return;
 
-        if(bodyPartRenderer!=null)
-        bodyPartRenderer.enabled = false;
+        if (bodyPartRenderer != null)
+            bodyPartRenderer.enabled = false;
 
         GameObject part = new GameObject();
-        if (bodyPartPrefab !=null)
-        part = Instantiate(bodyPartPrefab, transform.position, transform.rotation);
+        if (bodyPartPrefab != null)
+            part = Instantiate(bodyPartPrefab, transform.position, transform.rotation);
+        part.transform.parent = transform;
 
         Rigidbody[] rbs = part.GetComponentsInChildren<Rigidbody>();
 
-        foreach(Rigidbody r in rbs)
+        foreach (Rigidbody r in rbs)
         {
             r.interpolation = RigidbodyInterpolation.Interpolate;
             r.AddExplosionForce(15, transform.position, 5);
@@ -53,7 +72,9 @@ public class BodyPartScript : MonoBehaviour
 
         this.enabled = false;
         replaced = true;
+
     }
+<<<<<<< HEAD
     public void AddjustCurrentHealth(int adj)
     {
         _curHealth = adj;
@@ -62,6 +83,14 @@ public class BodyPartScript : MonoBehaviour
         if (_curHealth > maxHealth)
             _curHealth = maxHealth;
     }
+=======
+    /*IEnumerator FadeAway()
+    {
+        yield return new WaitForSeconds(3f);
+        StopUpdate = false;
+        Destroy(transform.parent);
+    }*/
+>>>>>>> AllyVetochka
 }
 // part какойто новый объект
 // rb твердое тело 
