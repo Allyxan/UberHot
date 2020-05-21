@@ -59,22 +59,27 @@ public class SuperHotScript : MonoBehaviour
                     {
                         if (Input.GetMouseButtonDown(0))
                         {
-
-                            if (weapon != null && weapon.reloading == false)
+                            if (HandScript.doing == true)
                             {
-                                StopCoroutine(ActionE(.03f));
-                                StartCoroutine(ActionE(.03f));
-                                weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .3f, Camera.main.transform.rotation, false);
+                                if (weapon != null && weapon.reloading == false)
+                                {
+                                    StopCoroutine(ActionE(.03f));
+                                    StartCoroutine(ActionE(.03f));
+                                    weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .5f, Camera.main.transform.rotation, false);
+                                }
                             }
                         }
                         if (Input.GetMouseButtonDown(1))
                         {
-                            if (weapon != null && weapon.reloading == false)
+                            if (HandScript.doing == true)
                             {
-                                StopCoroutine(ActionE(.4f));
-                                StartCoroutine(ActionE(.4f));
-                                weapon.Throw();
-                                weapon = null;
+                                if (weapon != null && weapon.reloading == false)
+                                {
+                                    StopCoroutine(ActionE(.4f));
+                                    StartCoroutine(ActionE(.4f));
+                                    weapon.Throw();
+                                    weapon = null;
+                                }
                             }
                         }
                     }
@@ -98,7 +103,10 @@ public class SuperHotScript : MonoBehaviour
                         if (Input.GetMouseButtonDown(0) && weapon == null)
 
                         {
-                            hit.transform.GetComponent<WeaponScript>().Pickup();
+                            if (HandScript.doing == true)
+                            {
+                                hit.transform.GetComponent<WeaponScript>().Pickup();
+                            }
                         }
                     }
 
@@ -139,10 +147,11 @@ public class SuperHotScript : MonoBehaviour
         action = false;
     }
 
-    public void ReloadUI(float time)
+    public void ReloadUI(float timee)
     {
         indicator.transform.eulerAngles = new Vector3(0, 0, 45);
-        indicator.transform.DORotate(new Vector3(0, 0, 90), time, RotateMode.LocalAxisAdd).SetEase(Ease.Linear).OnComplete(() => indicator.transform.DOPunchScale(Vector3.one / 3, .2f, 10, 1).SetUpdate(true));
+        //сделала по тупому, прошу прощения
+        indicator.transform.DORotate(new Vector3(0, 0, 90), 0.5f, RotateMode.LocalAxisAdd).SetEase(Ease.Linear).OnComplete(() => indicator.transform.DOPunchScale(Vector3.one / 3, .2f, 10, 1).SetUpdate(true));
     }
     Vector3 SpawnPos()
     {

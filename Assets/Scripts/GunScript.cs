@@ -10,6 +10,8 @@ public class GunScript : MonoBehaviour
     public static bool shoot = false;
     public static bool pickup = false;
     public static bool open = false;
+    public static bool doing = true;
+
 
 
     // Start is called before the first frame update
@@ -28,29 +30,33 @@ public class GunScript : MonoBehaviour
             {
                 anim = GetComponent<Animator>();
                 anim.SetBool("state", true);
-                if (throww == true)
+ 
+                if (HandScript.doing == true)
                 {
-                    HandScript.instance.anim.SetTrigger("throw");
-                    anim.SetTrigger("throw");
-                    throww = false;
-                }
-                if (shoot == true)
-                {
-                    HandScript.instance.anim.SetTrigger("Shooting");
-                    anim.SetTrigger("Shooting");
-                    shoot = false;
-                }
-                if (pickup == true)
-                {
-                    anim.SetBool("state", true);
-                    anim.SetTrigger("pick up");
-                    HandScript.instance.anim.SetTrigger("pick up");
-                    pickup = false;
-                }
-                if (open == true)
-                {
-                    anim.SetTrigger("open");
-                    open = false;
+                    if (throww == true)
+                    {
+                        HandScript.instance.anim.SetTrigger("throw");
+                        anim.SetTrigger("throw");
+                        throww = false;
+                    }
+                    if (shoot == true)
+                    {
+                        HandScript.instance.anim.SetTrigger("Shooting");
+                        anim.SetTrigger("Shooting");
+                        shoot = false;
+                    }
+                    if (pickup == true)
+                    {
+                        anim.SetBool("state", true);
+                        anim.SetTrigger("pick up");
+                        HandScript.instance.anim.SetTrigger("pick up");
+                        pickup = false;
+                    }
+                    if (open == true)
+                    {
+                        anim.SetTrigger("open");
+                        open = false;
+                    }
                 }
             }
             else

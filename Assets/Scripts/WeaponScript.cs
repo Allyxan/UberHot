@@ -48,6 +48,11 @@ public class WeaponScript : MonoBehaviour
         if (reloading || bulletAmount <= 0)
             return;
 
+        if (SuperHotScript.instance.weapon == this)
+        {
+            GunScript.shoot = true;
+        }
+
         //if (bulletAmount <= 0)
         //   return;
 
@@ -55,8 +60,8 @@ public class WeaponScript : MonoBehaviour
             bulletAmount--;
 
 
-            StartCoroutine(shoot2(pos, rot, isEnemy));
-        
+        StartCoroutine(shoot2(pos, rot, isEnemy));
+
 
         if (GetComponentInChildren<ParticleSystem>() != null)
             GetComponentInChildren<ParticleSystem>().Play();
@@ -66,10 +71,7 @@ public class WeaponScript : MonoBehaviour
 
         Camera.main.transform.DOComplete();
 
-        if (SuperHotScript.instance.weapon == this)
-        {
-            GunScript.shoot = true;
-        }
+
     }
 
     public void Throw()
@@ -81,14 +83,15 @@ public class WeaponScript : MonoBehaviour
     {
         if (!active)
             return;
-      
+
         SuperHotScript.instance.weapon = this;
-        ChangeSettings();
         GunScript.pickup = true;
+        GunScript.pickup = true;
+        ChangeSettings();
         transform.parent = SuperHotScript.instance.weaponHolder;
 
-        transform.DOLocalMove(Vector3.zero, 1f).SetEase(Ease.OutBack);
-        transform.DOLocalRotate(Vector3.zero, 0.5f);
+        transform.DOLocalMove(Vector3.zero, 0.33f).SetEase(Ease.OutBack);
+        transform.DOLocalRotate(Vector3.zero, 0.16f);
         transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
     }
 
@@ -127,19 +130,19 @@ public class WeaponScript : MonoBehaviour
     }
     IEnumerator Throw2()
     {
-        float speed = 2;
+        float speed = 3;
         float original_delay = 1.15f;
-        float delay = original_delay / speed;
+        float delay = original_delay / speed + 0.05f;
         GunScript.throww = true;
         yield return new WaitForSeconds(delay);
         Sequence s = DOTween.Sequence();
         s.Append(transform.DOMove(transform.position - transform.forward * 0.5f, .01f)).SetUpdate(true);
         s.AppendCallback(() => transform.parent = null);
         s.AppendCallback(() => transform.position = Camera.main.transform.position +
-        (Camera.main.transform.right * .1f) + (Camera.main.transform.up * -.001f) + (Camera.main.transform.forward * .3f));
+        (Camera.main.transform.right * .1f) + (Camera.main.transform.up * -.1f) + (Camera.main.transform.forward * .3f));
         s.AppendCallback(() => ChangeSettings());
         s.AppendCallback(() => rb.AddForce(Camera.main.transform.forward * 10, ForceMode.Impulse));
-        s.AppendCallback(() => rb.AddTorque(transform.transform.right + transform.transform.up * 20, ForceMode.Impulse));
+        s.AppendCallback(() => rb.AddTorque(transform.transform.up * 20, ForceMode.Impulse));
     }
     IEnumerator shoot2(Vector3 pos, Quaternion rot, bool isEnemy)
     {
