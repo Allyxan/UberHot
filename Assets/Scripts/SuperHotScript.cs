@@ -37,71 +37,97 @@ public class SuperHotScript : MonoBehaviour
             weapon = weaponHolder.GetComponentInChildren<WeaponScript>();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
+        LastTime = Time.timeScale;
         if (Cursor.visible == false)
         {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+                BreakResDoorScript.breakingdoor = false;
+                BreakAdmDoorScript.breakingdoor = false;
+                testAnim = false;
+            }
             if (testAnim == false)
             {
-                if (Input.GetKeyDown(KeyCode.K))
+                if ((BreakResDoorScript.breakingdoor == false) & (BreakAdmDoorScript.breakingdoor == false))
                 {
-                    LastTime = Time.timeScale;
-                    testAnim = true;
-                    StartCoroutine(PlaySecretKey());
+
+                    if (canShoot)
+                    {
+                        if (Input.GetMouseButtonDown(0))
+                        {
+
+                            if (weapon != null && weapon.reloading == false)
+                            {
+                                StopCoroutine(ActionE(.03f));
+                                StartCoroutine(ActionE(.03f));
+                                weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .3f, Camera.main.transform.rotation, false);
+                            }
+                        }
+                        if (Input.GetMouseButtonDown(1))
+                        {
+                            if (weapon != null && weapon.reloading == false)
+                            {
+                                StopCoroutine(ActionE(.4f));
+                                StartCoroutine(ActionE(.4f));
+                                weapon.Throw();
+                                weapon = null;
+                            }
+                        }
+                    }
+
+
+                    /* if (Input.GetMouseButtonDown(1))
+                     {
+                         StopCoroutine(ActionE(.4f));
+                         StartCoroutine(ActionE(.4f));
+
+                         if (weapon != null)
+                         if (Input.GetMouseButtonDown(1))
+                         {
+                         }
+
+                     }*/
+
+                    RaycastHit hit;
+                    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
+                    {
+                        if (Input.GetMouseButtonDown(0) && weapon == null)
+
+                        {
+                            hit.transform.GetComponent<WeaponScript>().Pickup();
+                        }
+                    }
+
+                    float x = Input.GetAxisRaw("Horizontal");
+                    float y = Input.GetAxisRaw("Vertical");
+
+                    //float time = (x != 0 || y != 0) ? 1f : .01f;
+                    //float lerpTime = (x != 0 || y != 0) ? .05f : .5f;
+                    float time = (x != 0 || y != 0) ? 1f : .05f;
+                    float lerpTime = (x != 0 || y != 0) ? .05f : .8f;
+
+                    time = action ? 1 : time;
+                    lerpTime = action ? .1f : lerpTime;
+
+                    Time.timeScale = Mathf.Lerp(LastTime, time, lerpTime);
+
+                    if (Input.GetKeyDown(KeyCode.K))
+                    {
+                        LastTime = Time.timeScale;
+                        testAnim = true;
+                        Time.timeScale = 1;
+                        StartCoroutine(PlaySecretKey());
+
+                    }
+                }
+                else
+                {
                     Time.timeScale = 1;
-                    //StopCoroutine(ActionE(.1f));
-                    //StartCoroutine(ActionE(.1f));
                 }
-
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-                }
-
-                if (canShoot)
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        StopCoroutine(ActionE(.03f));
-                        StartCoroutine(ActionE(.03f));
-                        if (weapon != null)
-                            weapon.Shoot(SpawnPos(), Camera.main.transform.rotation, false);
-                    }
-                }
-
-                if (Input.GetMouseButtonDown(1))
-                {
-                    StopCoroutine(ActionE(.4f));
-                    StartCoroutine(ActionE(.4f));
-
-                    if (weapon != null)
-                    {
-                        weapon.Throw();
-                        weapon = null;
-                    }
-                }
-
-                RaycastHit hit;
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
-                {
-                    if (Input.GetMouseButtonDown(0) && weapon == null)
-                    {
-                        hit.transform.GetComponent<WeaponScript>().Pickup();
-                    }
-                }
-
-                float x = Input.GetAxisRaw("Horizontal");
-                float y = Input.GetAxisRaw("Vertical");
-
-                float time = (x != 0 || y != 0) ? 1f : .01f;
-                float lerpTime = (x != 0 || y != 0) ? .05f : .5f;
-
-                time = action ? 1 : time;
-                lerpTime = action ? .1f : lerpTime;
-
-                Time.timeScale = Mathf.Lerp(Time.timeScale, time, lerpTime);
-
             }
         }
     }

@@ -13,10 +13,7 @@ public class BulletMovement : MonoBehaviour
     }
     void Update()
     {
-        if(Cursor.visible == false)
-        {
-            transform.position += transform.forward * speed * Time.deltaTime;
-        }
+        transform.position += transform.forward * speed * Time.deltaTime;
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -27,11 +24,11 @@ public class BulletMovement : MonoBehaviour
             bp.HidePartAndReplace();
             bp.enemy.Ragdoll();
         }
-        Destroy(gameObject);
         if(collision.gameObject.CompareTag("Player") && !(CompareTag("PlayerBullet")))
         {
-            //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+           // UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
         }
+        Destroy(gameObject);
     }
     IEnumerator SelfDestruct()
     {

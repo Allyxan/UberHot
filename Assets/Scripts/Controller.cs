@@ -10,12 +10,10 @@ using UnityEditor;
 public class Controller : MonoBehaviour
 {
     bool testAnim = false;
-
     public static Controller Instance { get; protected set; }
 
     public Camera MainCamera;
     public Camera WeaponCamera;
-    
     public Transform CameraPosition;
     public Transform WeaponPosition;
 
@@ -28,11 +26,11 @@ public class Controller : MonoBehaviour
     [Header("Audio")]
     public AudioClip JumpingAudioClip;
     public AudioClip LandingAudioClip;
-    
+
     float m_VerticalSpeed = 0.0f;
     bool m_IsPaused = false;
     int m_CurrentWeapon;
-    
+
     float m_VerticalAngle, m_HorizontalAngle;
     public float Speed { get; private set; } = 0.0f;
 
@@ -51,7 +49,7 @@ public class Controller : MonoBehaviour
     {
         Instance = this;
     }
-    
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -59,7 +57,7 @@ public class Controller : MonoBehaviour
 
         m_IsPaused = false;
         m_Grounded = true;
-        
+
         MainCamera.transform.SetParent(CameraPosition, false);
         MainCamera.transform.localPosition = Vector3.zero;
         MainCamera.transform.localRotation = Quaternion.identity;
@@ -74,32 +72,32 @@ public class Controller : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         bool wasGrounded = m_Grounded;
-            bool loosedGrounding = false;
-            //we define our own grounded and not use the Character controller one as the character controller can flicker
-            //between grounded/not grounded on small step and the like. So we actually make the controller "not grounded" only
-            //if the character controller reported not being grounded for at least .5 second;
-            if (!m_CharacterController.isGrounded)
+        bool loosedGrounding = false;
+        //we define our own grounded and not use the Character controller one as the character controller can flicker
+        //between grounded/not grounded on small step and the like. So we actually make the controller "not grounded" only
+        //if the character controller reported not being grounded for at least .5 second;
+        if (!m_CharacterController.isGrounded)
+        {
+            if (m_Grounded)
             {
-                if (m_Grounded)
+                m_GroundedTimer += Time.deltaTime;
+                if (m_GroundedTimer >= 0.5f)
                 {
-                    m_GroundedTimer += Time.deltaTime;
-                    if (m_GroundedTimer >= 0.5f)
-                    {
-                        loosedGrounding = true;
-                        m_Grounded = false;
-                    }
+                    loosedGrounding = true;
+                    m_Grounded = false;
                 }
             }
-            else
-            {
-                m_GroundedTimer = 0.0f;
-                m_Grounded = true;
-            }
+        }
+        else
+        {
+            m_GroundedTimer = 0.0f;
+            m_Grounded = true;
+        }
 
-            Speed = 0;
-            Vector3 move = Vector3.zero;
-            if (!m_IsPaused && !LockControl)
-            {
+        Speed = 0;
+        Vector3 move = Vector3.zero;
+        if (!m_IsPaused && !LockControl)
+        {
 
             if (Input.GetKeyDown(KeyCode.K))
             {
@@ -107,39 +105,40 @@ public class Controller : MonoBehaviour
                 StartCoroutine(PlaySecretKey());
             }
 
-            if (testAnim == false)
+
+            if ((BreakResDoorScript.breakingdoor == false) & (BreakAdmDoorScript.breakingdoor == false))
             {
-
-                if (m_Grounded && Input.GetButtonDown("Jump"))
+                if (testAnim == false)
                 {
-                    m_VerticalSpeed = JumpSpeed;
-                    m_Grounded = false;
-                    loosedGrounding = true;
-                    //FootstepPlayer.PlayClip(JumpingAudioCLip, 0.8f,1.1f);
+                    if (m_Grounded && Input.GetButtonDown("Jump"))
+                    {
+                        m_VerticalSpeed = JumpSpeed;
+                        m_Grounded = false;
+                        loosedGrounding = true;
+                        //FootstepPlayer.PlayClip(JumpingAudioCLip, 0.8f,1.1f);
+                    }
+
+                    bool running = Input.GetKey(KeyCode.LeftShift);
+                    float actualSpeed = running ? RunningSpeed : PlayerSpeed;
+
+                    if (loosedGrounding)
+                    {
+                        m_SpeedAtJump = actualSpeed;
+                    }
+
+                    // Move around with WASD
+
+                    move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                    if (move.sqrMagnitude > 1.0f)
+                        move.Normalize();
+
+                    float usedSpeed = m_Grounded ? actualSpeed : m_SpeedAtJump;
+
+                    move = move * usedSpeed * Time.deltaTime;
+
+                    move = transform.TransformDirection(move);
+                    m_CharacterController.Move(move);
                 }
-
-                bool running = Input.GetKey(KeyCode.LeftShift);
-                float actualSpeed = running ? RunningSpeed : PlayerSpeed;
-
-                if (loosedGrounding)
-                {
-                    m_SpeedAtJump = actualSpeed;
-                }
-
-                // Move around with WASD
-
-                move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-                if (move.sqrMagnitude > 1.0f)
-                    move.Normalize();
-
-                float usedSpeed = m_Grounded ? actualSpeed : m_SpeedAtJump;
-
-                move = move * usedSpeed * Time.deltaTime;
-
-                move = transform.TransformDirection(move);
-                m_CharacterController.Move(move);
-
-            }
                 // Turn player
                 float turnPlayer = Input.GetAxis("Mouse X") * MouseSensitivity;
                 m_HorizontalAngle = m_HorizontalAngle + turnPlayer;
@@ -164,14 +163,16 @@ public class Controller : MonoBehaviour
 
             }
 
-            // Fall down / gravity
-            m_VerticalSpeed = m_VerticalSpeed - 10.0f * Time.deltaTime;
-            if (m_VerticalSpeed < -10.0f)
-                m_VerticalSpeed = -10.0f; // max fall speed
-            var verticalMove = new Vector3(0, m_VerticalSpeed * Time.deltaTime, 0);
-            var flag = m_CharacterController.Move(verticalMove);
-            if ((flag & CollisionFlags.Below) != 0)
-                m_VerticalSpeed = 0;
+        }
+
+        // Fall down / gravity
+        m_VerticalSpeed = m_VerticalSpeed - 10.0f * Time.deltaTime;
+        if (m_VerticalSpeed < -10.0f)
+            m_VerticalSpeed = -10.0f; // max fall speed
+        var verticalMove = new Vector3(0, m_VerticalSpeed * Time.deltaTime, 0);
+        var flag = m_CharacterController.Move(verticalMove);
+        if ((flag & CollisionFlags.Below) != 0)
+            m_VerticalSpeed = 0;
     }
 
     IEnumerator PlaySecretKey()

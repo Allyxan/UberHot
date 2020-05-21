@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BreakResDoorScript : MonoBehaviour
 {
+    public static bool breakingdoor = false;
     public static BreakResDoorScript instance;
     public bool breakResseptionDoor = false;
     public new Camera camera;
@@ -32,16 +33,22 @@ public class BreakResDoorScript : MonoBehaviour
     {
         if (other.tag == "Player" && breakResseptionDoor == false)
         {
-            BreakDoor();
+            breakingdoor = true;
+            GunScript.open = true;
+            HandScript.open = true;
+            StartCoroutine(BreakDoor());
         }
     }
-    public void BreakDoor()
+    IEnumerator BreakDoor()
     {
+        yield return new WaitForSecondsRealtime(0.95f);
         DoorRb.isKinematic = false;
         Destroy(DoorHinge);
         DoorRb.AddForce(-transform.forward * 150);
         DoorRb.AddForce(-transform.forward * 1500 * Time.deltaTime);
-        Destroy(this);
+        yield return new WaitForSecondsRealtime(0.6f);
+        breakingdoor = false;
         breakResseptionDoor = true;
+        Destroy(this);
     }
 }

@@ -9,12 +9,14 @@ public class EnemyScript : MonoBehaviour
     bool testAnim = false;
     Animator anim;
     public bool dead;
+    public static EnemyScript instance;
     public Transform weaponHolder;
     GameObject Camera;
     public float distance = 3.0f;
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask;
+    bool borrow = false;
     void Start()
     {
         Camera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -30,66 +32,101 @@ public class EnemyScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            anim.SetBool("Test_anim", true);
+            ///anim.SetBool("Secter key", true); заменить на включение чит кода
+            //добавьте в аниматор противника assets/ new animation / test_sectret key; из any state мейби
             testAnim = true;
             navMeshAgent.enabled = false;
             StartCoroutine(PlaySecretKey());
         }
-        if (testAnim == false) anim.SetBool("Test_anim", false);
+        //if (testAnim == false) // anim.SetBool("Test_anim", false); заменить на выключение чит кода
 
         if (testAnim == false)
         {
-            if (!dead & BreakResDoorScript.instance.breakResseptionDoor == true)
+            if ((BreakResDoorScript.breakingdoor == false) & (BreakAdmDoorScript.breakingdoor == false))
             {
-                navMeshAgent.enabled = true;
-                transform.LookAt(new Vector3(Camera.transform.position.x, Camera.transform.position.y - 1.5f, Camera.transform.position.z));
-                float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
-                if (NewDistance > distance)
+
+                if (!dead && BreakResDoorScript.instance.breakResseptionDoor == true)
                 {
-                    navMeshAgent.SetDestination(Camera.transform.position);
-                }
-                else
-                {
-                    Vector3 direction = transform.position - Camera.transform.position;
-                    Vector3 FallBack = transform.position + direction;
-                    navMeshAgent.SetDestination(FallBack);
-                }
-            }
-            else
-            {
-                navMeshAgent.enabled = false;
-                navMeshAgent.velocity = Vector3.zero;
-            }
-            RaycastHit wallCheck; RaycastHit enemyCheck;
-            if (!dead)
-            {
-                if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
-                {
-                    Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
-                    //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
-                    if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
+
+                    /*if((gameObject.name == "Enemy (1st stage)" && BreakResDoorScript.instance.breakResseptionDoor == true)
+                        || (gameObject.name == "Enemy (2nd stage)" && TriggerScript.instance.trigger2ndPassed == true)
+                        || (gameObject.name == "Enemy (3rd stage)" && TriggerScript.instance.trigger3rdPassed == true)
+                        || (gameObject.name == "Enemy (Administration)" TriggerScript.instance.triggerAdminPassed == true))
                     {
-                        readyToShoot = false;
+                        gameObject.SetActive(true);
+                        navMeshAgent.enabled = true;
+                        transform.LookAt(new Vector3(Camera.transform.position.x, Camera.transform.position.y-1.5f, Camera.transform.position.z));
+                        float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
+                        if (NewDistance > distance)
+                        {
+                            navMeshAgent.SetDestination(Camera.transform.position);
+                        }
+                        else
+                        {
+                            Vector3 direction = transform.position - Camera.transform.position;
+                            Vector3 FallBack = transform.position + direction;
+                            navMeshAgent.SetDestination(FallBack);
+                        }
+                    }*/
+                    navMeshAgent.enabled = true;
+                    transform.LookAt(new Vector3(Camera.transform.position.x, Camera.transform.position.y - 1.5f, Camera.transform.position.z));
+                    float NewDistance = Vector3.Distance(transform.position, Camera.transform.position);
+                    if (NewDistance > distance)
+                    {
+                        navMeshAgent.SetDestination(Camera.transform.position);
                     }
                     else
                     {
-                        if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out wallCheck, 100))
+                        Vector3 direction = transform.position - Camera.transform.position;
+                        Vector3 FallBack = transform.position + direction;
+                        navMeshAgent.SetDestination(FallBack);
+                    }
+                }
+                else
+                {
+                    navMeshAgent.enabled = false;
+                    navMeshAgent.velocity = Vector3.zero;
+
+                }
+                RaycastHit wallCheck; RaycastHit enemyCheck;
+                if (!dead)
+                {
+                    if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
+                    {
+                        Debug.DrawRay(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward * 5, Color.green);
+                        //if (Physics.Raycast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, transform.forward, out enemyCheck, 100, layerMask)) //Staraya versiya; Nova robit lu4she
+                        if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out enemyCheck, 100, layerMask))
                         {
-                            if (wallCheck.transform.CompareTag("Wall"))
+                            readyToShoot = false;
+                        }
+                        else
+                        {
+                            if (Physics.SphereCast(weaponHolder.GetComponentInChildren<WeaponScript>().transform.position, 0.1f, transform.forward, out wallCheck, 100))
+
                             {
-                                readyToShoot = false;
-                            }
-                            if (wallCheck.transform.CompareTag("Player"))
-                            {
-                                readyToShoot = true;
+                                if (wallCheck.transform.CompareTag("Wall"))
+                                {
+                                    readyToShoot = false;
+                                }
+                                if (wallCheck.transform.CompareTag("Player"))
+                                {
+                                    readyToShoot = true;
+                                }
                             }
                         }
                     }
-                }
-                /*else
-                {
+                    /*else
+                    {
 
-                }*/
+                    }*/
+                }
+                if (dead && borrow)
+                {
+                    transform.Translate(Vector3.down * 0.3f * Time.deltaTime, Space.World);
+                }
+            } else
+            {
+                navMeshAgent.enabled = false;
             }
         }
     }
@@ -111,6 +148,9 @@ public class EnemyScript : MonoBehaviour
             WeaponScript w = weaponHolder.GetComponentInChildren<WeaponScript>();
             w.Release();
         }
+        if (gameObject.name != "Enemy (Administration)")
+            StartCoroutine(WaitAndBury());
+        //WeaponRelease();
     }
     public void WeaponRelease()
     {
@@ -136,7 +176,16 @@ public class EnemyScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(Random.Range(.1f, .5f));
         anim.enabled = true;
     }
-
+    IEnumerator WaitAndBury()
+    {
+        yield return new WaitForSeconds(10f);
+        GameObject skeleton = gameObject.transform.Find("LowManSkeleton").gameObject;
+        skeleton.SetActive(false);
+        borrow = true;
+        yield return new WaitForSeconds(5f);
+        borrow = false;
+        Destroy(gameObject);
+    }
     IEnumerator PlaySecretKey()
     {
         yield return new WaitForSecondsRealtime(5f);
