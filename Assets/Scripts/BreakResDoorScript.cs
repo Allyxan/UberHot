@@ -10,12 +10,17 @@ public class BreakResDoorScript : MonoBehaviour
     public LayerMask doorLayer;
     Rigidbody DoorRb;
     HingeJoint DoorHinge;
+
+    public AudioSource ZvukDver;
+   
+
     void Start()
     {
         instance = this;
         DoorRb = GetComponent<Rigidbody>();
         DoorRb.isKinematic = true;
         DoorHinge = GetComponent<HingeJoint>();
+        ZvukDver = GetComponent<AudioSource>();
     }
     /*void Update()
     {
@@ -33,8 +38,11 @@ public class BreakResDoorScript : MonoBehaviour
         if (other.tag == "Player" && breakResseptionDoor == false)
         {
             BreakDoor();
+            //audio.PlayOneShot(ZvukDver, 0.7F);
+            ZvukDver.Play();
         }
     }
+    
     public void BreakDoor()
     {
         DoorRb.isKinematic = false;

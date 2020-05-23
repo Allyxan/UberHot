@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-
+using UnityEngine.Audio;
 public class SuperHotScript : MonoBehaviour
 {
     public static SuperHotScript instance;
     public bool canShoot = true;
     public bool action;
+    public float forPitch;
     public GameObject bullet;
     public Transform bulletSpawner;
+    public AudioMixer master;
 
     [Header("Weapon")]
     public WeaponScript weapon;
@@ -27,7 +29,6 @@ public class SuperHotScript : MonoBehaviour
     public GameObject hitParticlePrefab;
     public GameObject bulletPrefab;
 
-
     private void Awake()
     {
         instance = this;
@@ -35,10 +36,9 @@ public class SuperHotScript : MonoBehaviour
             weapon = weaponHolder.GetComponentInChildren<WeaponScript>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(Cursor.visible == false)
+        if (Cursor.visible == false)
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -80,13 +80,16 @@ public class SuperHotScript : MonoBehaviour
             float x = Input.GetAxisRaw("Horizontal");
             float y = Input.GetAxisRaw("Vertical");
 
-            float time = (x != 0 || y != 0) ? 1f : .01f;
-            float lerpTime = (x != 0 || y != 0) ? .05f : .5f;
+            float time = (x != 0 || y != 0) ? 1f : .05f;
+            float lerpTime = (x != 0 || y != 0) ? .05f : .8f;
 
             time = action ? 1 : time;
             lerpTime = action ? .1f : lerpTime;
 
             Time.timeScale = Mathf.Lerp(Time.timeScale, time, lerpTime);
+            forPitch = Time.timeScale;
+            if (forPitch < 0.2f) forPitch = 0.2f;
+            master.SetFloat("masterPitch", forPitch);
         }
     }
 

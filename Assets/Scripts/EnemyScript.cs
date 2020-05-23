@@ -14,6 +14,14 @@ public class EnemyScript : MonoBehaviour
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask;
+    public int Probnay;
+    public GameObject DrugoiObiekt;
+    private PlayerAttack playerAttack;
+
+    public AudioClip ZvukSmert;
+    public AudioSource audio;
+
+
     void Start()
     {
         Camera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -23,6 +31,11 @@ public class EnemyScript : MonoBehaviour
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             weaponHolder.GetComponentInChildren<WeaponScript>().active = false;
         layerMask = 1 << 15;
+        //GameObject go = GameObject.Find("Enemy (Resseption)");
+        //PlayerAttack playerAttack = go.GetComponent<PlayerAttack>();
+        //int current = playerAttack.BB;
+        //Probnay = current;
+        audio = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -82,15 +95,21 @@ public class EnemyScript : MonoBehaviour
     }
     public void Ragdoll()
     {
+       
         tag = "DeadEnemy";
         anim.enabled = false;
+        
         BodyPartScript[] parts = GetComponentsInChildren<BodyPartScript>();
+        
         foreach (BodyPartScript bp in parts)
         {
+           
             bp.tag = "DeadEnemy";
             bp.rb.isKinematic = false;
             bp.rb.interpolation = RigidbodyInterpolation.Interpolate;
+            
         }
+        
         dead = true;
 
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
@@ -98,7 +117,24 @@ public class EnemyScript : MonoBehaviour
             WeaponScript w = weaponHolder.GetComponentInChildren<WeaponScript>();
             w.Release();
         }
+        audio.PlayOneShot(ZvukSmert, 0.7F);
     }
+    //public void Smert()
+    //{
+    //    //GameObject go = GameObject.Find("Enemy (Resseption)");
+    //    //PlayerAttack playerAttack = go.GetComponent<PlayerAttack>();
+    //    //int current = playerAttack.BB;
+    //        tag = "DeadEnemy";
+    //        anim.enabled = false;
+    //       if (Probnay == 1)
+    //        dead = true;
+
+    //    if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
+    //    {
+    //        WeaponScript w = weaponHolder.GetComponentInChildren<WeaponScript>();
+    //        w.Release();
+    //    }
+    //}
     public void WeaponRelease()
     {
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
@@ -123,4 +159,5 @@ public class EnemyScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(Random.Range(.1f, .5f));
         anim.enabled = true;
     }
+    
 }
