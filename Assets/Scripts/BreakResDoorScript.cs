@@ -11,12 +11,15 @@ public class BreakResDoorScript : MonoBehaviour
     public LayerMask doorLayer;
     Rigidbody DoorRb;
     HingeJoint DoorHinge;
+    public AudioSource ZvukDver;
+
     void Start()
     {
         instance = this;
         DoorRb = GetComponent<Rigidbody>();
         DoorRb.isKinematic = true;
         DoorHinge = GetComponent<HingeJoint>();
+        ZvukDver = GetComponent<AudioSource>();
     }
     /*void Update()
     {
@@ -42,6 +45,8 @@ public class BreakResDoorScript : MonoBehaviour
     IEnumerator BreakDoor()
     {
         yield return new WaitForSecondsRealtime(0.95f);
+        //audio.PlayOneShot(ZvukDver, 0.7F);
+        ZvukDver.Play();
         DoorRb.isKinematic = false;
         Destroy(DoorHinge);
         DoorRb.AddForce(-transform.forward * 150);

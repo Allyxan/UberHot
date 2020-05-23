@@ -35,7 +35,7 @@ public class HandScript : MonoBehaviour
         {
             doing = false;
         }
-        Debug.Log(doing);
+        //Debug.Log(doing);
         if (doing == true)
         {
             if (open == true)

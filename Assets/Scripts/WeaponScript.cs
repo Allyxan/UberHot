@@ -22,6 +22,13 @@ public class WeaponScript : MonoBehaviour
     [Header("Weapon Settings")]
     public float reloadTime = .7f;
     public int bulletAmount = 6;
+    Vector3 recoil = new Vector3(-30f, 0, 0);
+
+    public AudioClip ZvukVistrela;
+    public AudioClip ZvukPustogoPistoleta;
+    public AudioClip Brosit;
+    public AudioClip Podniat;
+    public AudioSource audio;
 
     void Start()
     {
@@ -30,6 +37,7 @@ public class WeaponScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
         renderer = GetComponent<Renderer>();
+        audio = GetComponent<AudioSource>();
 
 
         ChangeSettings();
@@ -45,8 +53,14 @@ public class WeaponScript : MonoBehaviour
     }
     public void Shoot(Vector3 pos, Quaternion rot, bool isEnemy)
     {
-        if (reloading || bulletAmount <= 0)
+        if (reloading)
             return;
+
+        if (bulletAmount <= 0)
+        {
+            audio.PlayOneShot(ZvukPustogoPistoleta, 0.7F);
+            return;
+        }
 
         if (SuperHotScript.instance.weapon == this)
         {
@@ -57,14 +71,20 @@ public class WeaponScript : MonoBehaviour
         //   return;
 
         if (SuperHotScript.instance.weapon == this)
+        {
+            audio.PlayOneShot(ZvukVistrela, 0.7F);
             bulletAmount--;
+        }
 
 
         StartCoroutine(shoot2(pos, rot, isEnemy));
 
 
         if (GetComponentInChildren<ParticleSystem>() != null)
+        {
             GetComponentInChildren<ParticleSystem>().Play();
+            audio.PlayOneShot(ZvukVistrela, 0.7F);
+        }
 
         if (SuperHotScript.instance.weapon == this)
             StartCoroutine(Reload());
@@ -93,6 +113,7 @@ public class WeaponScript : MonoBehaviour
         transform.DOLocalMove(Vector3.zero, 0.33f).SetEase(Ease.OutBack);
         transform.DOLocalRotate(Vector3.zero, 0.16f);
         transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+        audio.PlayOneShot(Podniat, 0.7F);
     }
 
     public void Release()
@@ -143,6 +164,7 @@ public class WeaponScript : MonoBehaviour
         s.AppendCallback(() => ChangeSettings());
         s.AppendCallback(() => rb.AddForce(Camera.main.transform.forward * 10, ForceMode.Impulse));
         s.AppendCallback(() => rb.AddTorque(transform.transform.up * 20, ForceMode.Impulse));
+        audio.PlayOneShot(Brosit, 0.7F);
     }
     IEnumerator shoot2(Vector3 pos, Quaternion rot, bool isEnemy)
     {

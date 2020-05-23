@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Audio;
 
 public class SuperHotScript : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class SuperHotScript : MonoBehaviour
     public bool action;
     public GameObject bullet;
     public Transform bulletSpawner;
+    public float forPitch;
+    public AudioMixer master;
 
     [Header("Weapon")]
     public WeaponScript weapon;
@@ -122,6 +125,9 @@ public class SuperHotScript : MonoBehaviour
                     lerpTime = action ? .1f : lerpTime;
 
                     Time.timeScale = Mathf.Lerp(LastTime, time, lerpTime);
+                    forPitch = Time.timeScale;
+                    if (forPitch < 0.2f) forPitch = 0.2f;
+                    master.SetFloat("masterPitch", forPitch);
 
                     if (Input.GetKeyDown(KeyCode.K))
                     {
