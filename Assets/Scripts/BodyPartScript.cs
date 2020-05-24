@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class BodyPartScript : MonoBehaviour
 {
+
+    public  Material material0;
+    public Material material1;
     public Rigidbody rb; //твердое тело
     public EnemyScript enemy; //противник
+    public EnemyColour colour;
     public Renderer bodyPartRenderer; // доступ к телу
     public GameObject bodyPartPrefab; // объект
-    public bool replaced; 
+    public bool replaced;
+
 
 
     public int maxHealth = 90;
@@ -29,21 +34,28 @@ public class BodyPartScript : MonoBehaviour
     {
         AddjustCurrentHealth(_curHealth);
     }
+
+    public void ChangeMaterial(int lifes)
+    {
+        enemy.ChangeMaterial(lifes);
+
+    }
+
     public void HidePartAndReplace()
     {
         if (replaced)
             return;
 
-        if(bodyPartRenderer!=null)
-        bodyPartRenderer.enabled = false;
+        if (bodyPartRenderer != null)
+            bodyPartRenderer.enabled = false;
 
         GameObject part = new GameObject();
-        if (bodyPartPrefab !=null)
-        part = Instantiate(bodyPartPrefab, transform.position, transform.rotation);
+        if (bodyPartPrefab != null)
+            part = Instantiate(bodyPartPrefab, transform.position, transform.rotation);
 
         Rigidbody[] rbs = part.GetComponentsInChildren<Rigidbody>();
 
-        foreach(Rigidbody r in rbs)
+        foreach (Rigidbody r in rbs)
         {
             r.interpolation = RigidbodyInterpolation.Interpolate;
             r.AddExplosionForce(15, transform.position, 5);

@@ -9,7 +9,10 @@ using UnityEditor;
 
 public class Controller : MonoBehaviour
 {
+    public static bool bb = false;
     bool testAnim = false;
+    public static Collider otherEnemy;
+    public LayerMask Enemy;
     public static Controller Instance { get; protected set; }
 
     public Camera MainCamera;
@@ -45,6 +48,8 @@ public class Controller : MonoBehaviour
     float m_GroundedTimer;
     float m_SpeedAtJump = 0.0f;
 
+    int enemys;
+
     void Awake()
     {
         Instance = this;
@@ -52,6 +57,7 @@ public class Controller : MonoBehaviour
 
     void Start()
     {
+        enemys = 0;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -180,7 +186,77 @@ public class Controller : MonoBehaviour
         yield return new WaitForSecondsRealtime(5f);
         testAnim = false;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            bb = true;
+            GunScript.bb = true;
+            HandScript.bb = true;
+            otherEnemy = other;
+            enemys++;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if ((other.tag == "Enemy") || (other.tag == "DeadEnemy"))
+        {
+            enemys--;
+            bb = false;
+            GunScript.bb = false;
+            HandScript.bb = false;
+            otherEnemy = null;
+
+        }
+
+        if (enemys == 0)
+        {
+
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            bb = true;
+            GunScript.bb = true;
+            HandScript.bb = true;
+            otherEnemy = other;
+
+        }
+    }
+
+    public void BBB()
+    {
+        GunScript.bb1 = true;
+        HandScript.bb1 = true;
+        StartCoroutine(BB());
+    }
+    IEnumerator BB()
+    {
+        //0.95
+        yield return new WaitForSeconds(0.136f);
+
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 5f, Enemy))
+        {
+            Debug.Log(hit.transform);
+            BodyPartScript bp = hit.transform.GetComponent<BodyPartScript>();
+            //Debug.Log(other.transform.parent.parent);
+            //Debug.Log(bp.enemy.lifes);
+            bp.enemy.lifes--;
+            bp.ChangeMaterial(bp.enemy.lifes);
+            if (bp.enemy.lifes < 1)
+            {
+                Instantiate(SuperHotScript.instance.hitParticlePrefab, transform.position, transform.rotation);
+                bp.HidePartAndReplace();
+                bp.enemy.Ragdoll();
+            }
+        }
+    }
     /*
+
     public void DisplayCursor(bool display)
     {
         m_IsPaused = display;

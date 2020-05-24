@@ -64,11 +64,17 @@ public class SuperHotScript : MonoBehaviour
                         {
                             if (HandScript.doing == true)
                             {
-                                if (weapon != null && weapon.reloading == false)
+                                if (Controller.bb == false)
                                 {
-                                    StopCoroutine(ActionE(.03f));
-                                    StartCoroutine(ActionE(.03f));
-                                    weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .5f, Camera.main.transform.rotation, false);
+                                    if (weapon != null && weapon.reloading == false)
+                                    {
+                                        StopCoroutine(ActionE(.03f));
+                                        StartCoroutine(ActionE(.03f));
+                                        weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .5f, Camera.main.transform.rotation, false);
+                                    }
+                                } else
+                                {
+                                    Controller.Instance.BBB();
                                 }
                             }
                         }

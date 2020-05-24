@@ -6,13 +6,15 @@ using UnityEngine.AI;
 [SelectionBase]
 public class EnemyScript : MonoBehaviour
 {
+
+
     bool testAnim = false;
     Animator anim;
     public bool dead;
     public static EnemyScript instance;
     public Transform weaponHolder;
     GameObject Camera;
-    public float distance = 3.0f;
+    public float distance = 0.05f;
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask;
@@ -23,6 +25,8 @@ public class EnemyScript : MonoBehaviour
 
     public AudioClip ZvukSmert;
     public AudioSource audio;
+
+    public int lifes;
 
     void Start()
     {
@@ -38,6 +42,7 @@ public class EnemyScript : MonoBehaviour
         //int current = playerAttack.BB;
         //Probnay = current;
         audio = GetComponent<AudioSource>();
+        lifes = 2;
     }
 
     void Update()
@@ -89,9 +94,9 @@ public class EnemyScript : MonoBehaviour
                     }
                     else
                     {
-                        Vector3 direction = transform.position - Camera.transform.position;
-                        Vector3 FallBack = transform.position + direction;
-                        navMeshAgent.SetDestination(FallBack);
+                       Vector3 direction = transform.position - Camera.transform.position;
+                       Vector3 FallBack = transform.position + direction;
+                       navMeshAgent.SetDestination(FallBack);
                     }
                 }
                 else
@@ -199,12 +204,14 @@ public class EnemyScript : MonoBehaviour
                 transform.rotation, true);
         }
     }
+
     IEnumerator RandomAnimation()
     {
         anim.enabled = false;
         yield return new WaitForSecondsRealtime(Random.Range(.1f, .5f));
         anim.enabled = true;
     }
+
     IEnumerator WaitAndBury()
     {
         yield return new WaitForSeconds(10f);
@@ -220,5 +227,24 @@ public class EnemyScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(5f);
         testAnim = false;
         navMeshAgent.enabled = true;
+    }
+    public void ChangeMaterial(int lifes)
+    {
+        // this.GetComponentsInChildren<Renderer>().material = material1;
+        SkinnedMeshRenderer[] clr = GetComponentsInChildren<SkinnedMeshRenderer>();
+        //clr[1].material = material1;
+        foreach (SkinnedMeshRenderer r in clr)
+        {
+
+            if (lifes == 1)
+            {
+                Debug.Log("fd");
+                r.material.color = Color.grey;
+            }
+            if (lifes == 0)
+            {
+                r.material.color = Color.black;
+            }
+        }
     }
 }
