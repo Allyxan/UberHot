@@ -15,7 +15,7 @@ public class BulletMovement : MonoBehaviour
     {
         if (Cursor.visible == false)
         {
-            transform.position += transform.forward * speed * Time.deltaTime;
+            transform.position += transform.forward * 0.7f*speed * Time.deltaTime;
         }
     }
     private void OnCollisionEnter(Collision collision)
