@@ -10,12 +10,9 @@ public class BodyPartScript : MonoBehaviour
     public GameObject bodyPartPrefab; // объект
     public bool replaced; 
 
-
     public int maxHealth = 90;
     public int _curHealth = 90;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -39,7 +36,8 @@ public class BodyPartScript : MonoBehaviour
 
         GameObject part = new GameObject();
         if (bodyPartPrefab !=null)
-        part = Instantiate(bodyPartPrefab, transform.position, transform.rotation);
+            part = Instantiate(bodyPartPrefab, transform.position, transform.rotation);
+        part.transform.parent = transform;
 
         Rigidbody[] rbs = part.GetComponentsInChildren<Rigidbody>();
 
@@ -63,6 +61,3 @@ public class BodyPartScript : MonoBehaviour
             _curHealth = maxHealth;
     }
 }
-// part какойто новый объект
-// rb твердое тело 
-//

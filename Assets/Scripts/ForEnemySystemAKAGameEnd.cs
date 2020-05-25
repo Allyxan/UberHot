@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 public class ForEnemySystemAKAGameEnd : MonoBehaviour
 {
     GameObject fadeToBlack;
@@ -11,6 +12,9 @@ public class ForEnemySystemAKAGameEnd : MonoBehaviour
     Animator ani;
     public AudioClip UberHot;
     public AudioSource audio;
+    public bool oneTimeLaunch = false;
+    public float forPitch;
+    public AudioMixer master;
 
     void Start()
     {
@@ -26,14 +30,18 @@ public class ForEnemySystemAKAGameEnd : MonoBehaviour
             Player.GetComponent<SuperHotScript>().enabled = false;
             Player.tag = "Untagged";
             Time.timeScale = 1;
-            StartCoroutine(QuitWaiting());
+            forPitch = Time.timeScale;
+            master.SetFloat("masterPitch", forPitch);
+            if (oneTimeLaunch == false)
+                StartCoroutine(QuitWaiting());
+            oneTimeLaunch = true;
         }
     }
     IEnumerator QuitWaiting()
     {
         audio.PlayOneShot(UberHot, 0.7F);
         ani.SetTrigger("Fade");
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(2.3f);
         SceneManager.LoadScene(0);
     }
 }

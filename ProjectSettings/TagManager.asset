@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - DeadEnemy
   - PlayerBullet
+  - EnemyGun
   layers:
   - Default
   - TransparentFX

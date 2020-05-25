@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class PauseGame : MonoBehaviour
 {
@@ -10,10 +11,15 @@ public class PauseGame : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject crossHair;
     public GameObject Player;
+    public float forPitch;
+    public AudioMixer master;
     GameObject fadeToBlack;
     Animator ani;
+    TutorialScript tutorialScript;
+
     void Start()
     {
+        tutorialScript = GameObject.Find("MenuManager").GetComponent<TutorialScript>();
         fadeToBlack = GameObject.Find("FadeToBlack");
         ani = fadeToBlack.GetComponent<Animator>();
     }
@@ -29,7 +35,7 @@ public class PauseGame : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-        if (Input.GetKeyDown(KeyCode.Escape) && quitting == false)
+        if (Input.GetKeyDown(KeyCode.Escape) && quitting == false && tutorialScript.stop == true)
         {
             if (gamePaused == false)
             {
@@ -70,6 +76,8 @@ public class PauseGame : MonoBehaviour
         Player.GetComponent<SuperHotScript>().enabled = false;
         Player.tag = "Untagged";
         Time.timeScale = 1;
+        forPitch = Time.timeScale;
+        master.SetFloat("masterPitch", forPitch);
         AudioListener.pause = false;
         StartCoroutine(QuitWaiting());
     }

@@ -56,7 +56,7 @@ public class WeaponScript : MonoBehaviour
         if (reloading)
             return;
 
-        if (bulletAmount <= 0)
+        if (bulletAmount <= 0 && isEnemy == false)
         {
             audio.PlayOneShot(ZvukPustogoPistoleta, 0.7F);
             return;
@@ -72,7 +72,6 @@ public class WeaponScript : MonoBehaviour
 
         if (SuperHotScript.instance.weapon == this)
         {
-            audio.PlayOneShot(ZvukVistrela, 0.7F);
             bulletAmount--;
         }
 
@@ -83,7 +82,7 @@ public class WeaponScript : MonoBehaviour
         if (GetComponentInChildren<ParticleSystem>() != null)
         {
             GetComponentInChildren<ParticleSystem>().Play();
-            audio.PlayOneShot(ZvukVistrela, 0.7F);
+            audio.PlayOneShot(ZvukVistrela, 0.35F);
         }
 
         if (SuperHotScript.instance.weapon == this)
@@ -123,7 +122,7 @@ public class WeaponScript : MonoBehaviour
         rb.isKinematic = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         collider.isTrigger = false;
-
+        tag = "EnemyGun";
         rb.AddForce((Camera.main.transform.position - transform.position) * 2, ForceMode.Impulse);
         rb.AddForce(Vector3.up * 2, ForceMode.Impulse);
     }
@@ -168,12 +167,18 @@ public class WeaponScript : MonoBehaviour
     }
     IEnumerator shoot2(Vector3 pos, Quaternion rot, bool isEnemy)
     {
-        yield return new WaitForSeconds(.0f); //хелп, там хотелось бы видеть .5f
-        GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
+        //GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
         if (isEnemy == false)
         {
+            GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, pos, rot);
             bullet.tag = "PlayerBullet";
         }
+        else
+        {
+            Vector3 newPos = new Vector3(pos.x, pos.y, pos.z);
+            GameObject bullet = Instantiate(SuperHotScript.instance.bulletPrefab, newPos, rot);
+        }
+        yield return new WaitForSeconds(.0f); //хелп, там хотелось бы видеть .5f
     }
 
 }

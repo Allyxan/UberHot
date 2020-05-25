@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-
 public class Controller : MonoBehaviour
 {
     bool testAnim = false;
@@ -98,14 +97,6 @@ public class Controller : MonoBehaviour
         Vector3 move = Vector3.zero;
         if (!m_IsPaused && !LockControl)
         {
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                testAnim = true;
-                StartCoroutine(PlaySecretKey());
-            }
-
-
             if ((BreakResDoorScript.breakingdoor == false) & (BreakAdmDoorScript.breakingdoor == false))
             {
                 if (testAnim == false)
@@ -118,8 +109,8 @@ public class Controller : MonoBehaviour
                         //FootstepPlayer.PlayClip(JumpingAudioCLip, 0.8f,1.1f);
                     }
 
-                    bool running = Input.GetKey(KeyCode.LeftShift);
-                    float actualSpeed = running ? RunningSpeed : PlayerSpeed;
+                    //bool running = Input.GetKey(KeyCode.LeftShift);
+                    float actualSpeed = PlayerSpeed;
 
                     if (loosedGrounding)
                     {
@@ -173,12 +164,6 @@ public class Controller : MonoBehaviour
         var flag = m_CharacterController.Move(verticalMove);
         if ((flag & CollisionFlags.Below) != 0)
             m_VerticalSpeed = 0;
-    }
-
-    IEnumerator PlaySecretKey()
-    {
-        yield return new WaitForSecondsRealtime(5f);
-        testAnim = false;
     }
     /*
     public void DisplayCursor(bool display)

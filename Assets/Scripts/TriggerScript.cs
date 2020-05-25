@@ -7,6 +7,9 @@ public class TriggerScript : MonoBehaviour
     public bool dontFinishTheGame = true;
     public GameObject spawnPoint1;
     public GameObject spawnPoint2;
+    public GameObject spawnPoint3;
+    public GameObject spawnPoint4;
+
     void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
@@ -25,6 +28,8 @@ public class TriggerScript : MonoBehaviour
             }
             if (gameObject.name == "Trigger (3rd stage)")
             {
+                spawnPoint3.SetActive(true);
+                spawnPoint4.SetActive(true);
                 foreach (GameObject enemy in GameObject.FindObjectsOfTypeAll(typeof(GameObject)))
                 {
                     if (enemy.name == "Enemy (3rd stage)")

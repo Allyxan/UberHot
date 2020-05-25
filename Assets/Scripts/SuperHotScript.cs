@@ -32,14 +32,12 @@ public class SuperHotScript : MonoBehaviour
     public GameObject hitParticlePrefab;
     public GameObject bulletPrefab;
 
-
     private void Awake()
     {
         instance = this;
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             weapon = weaponHolder.GetComponentInChildren<WeaponScript>();
     }
-
 
     void Update()
     {
@@ -81,6 +79,7 @@ public class SuperHotScript : MonoBehaviour
                                     StopCoroutine(ActionE(.4f));
                                     StartCoroutine(ActionE(.4f));
                                     weapon.Throw();
+                                    weapon.tag = "EnemyGun";
                                     weapon = null;
                                 }
                             }
@@ -104,11 +103,11 @@ public class SuperHotScript : MonoBehaviour
                     if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
                     {
                         if (Input.GetMouseButtonDown(0) && weapon == null)
-
                         {
                             if (HandScript.doing == true)
                             {
                                 hit.transform.GetComponent<WeaponScript>().Pickup();
+                                hit.transform.GetComponent<WeaponScript>().tag = "Player";
                             }
                         }
                     }
@@ -128,15 +127,6 @@ public class SuperHotScript : MonoBehaviour
                     forPitch = Time.timeScale;
                     if (forPitch < 0.2f) forPitch = 0.2f;
                     master.SetFloat("masterPitch", forPitch);
-
-                    if (Input.GetKeyDown(KeyCode.K))
-                    {
-                        LastTime = Time.timeScale;
-                        testAnim = true;
-                        Time.timeScale = 1;
-                        StartCoroutine(PlaySecretKey());
-
-                    }
                 }
                 else
                 {
@@ -156,9 +146,9 @@ public class SuperHotScript : MonoBehaviour
     public void ReloadUI(float timee)
     {
         indicator.transform.eulerAngles = new Vector3(0, 0, 45);
-        //сделала по тупому, прошу прощения
         indicator.transform.DORotate(new Vector3(0, 0, 90), 0.5f, RotateMode.LocalAxisAdd).SetEase(Ease.Linear).OnComplete(() => indicator.transform.DOPunchScale(Vector3.one / 3, .2f, 10, 1).SetUpdate(true));
     }
+
     Vector3 SpawnPos()
     {
         return Camera.main.transform.position + (Camera.main.transform.forward * .5f) + (Camera.main.transform.up * -.02f);

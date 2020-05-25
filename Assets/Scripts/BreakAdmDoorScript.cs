@@ -10,6 +10,10 @@ public class BreakAdmDoorScript : MonoBehaviour
     Rigidbody DoorRb;
     HingeJoint DoorHinge;
     public AudioSource ZvukDver;
+    public GameObject weaponHolder;
+    public bool checkComplete = false;
+    public bool inTrigger = false;
+    public bool oneTimeOpen = false;
 
     void Start()
     {
@@ -18,28 +22,36 @@ public class BreakAdmDoorScript : MonoBehaviour
         DoorHinge = GetComponent<HingeJoint>();
         ZvukDver = GetComponent<AudioSource>();
     }
-    /*void Update()
+    void Update()
     {
-        RaycastHit hitDoor;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hitDoor, 3, doorLayer))
+        RaycastHit doorCheck;
+        if (Physics.Raycast(weaponHolder.transform.position, weaponHolder.transform.forward, out doorCheck, 1))
         {
-            if (Input.GetKeyDown(KeyCode.E) && LayerMask.LayerToName(14) == "AdmDoor")
-            {
-                BreakDoor();
-            }
+            if (doorCheck.transform.CompareTag("ResseptionDoor") && inTrigger == true)
+                checkComplete = true;
         }
-    }*/
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
+            inTrigger = true;
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Player" && checkComplete && !oneTimeOpen)
         {
             breakingdoor = true;
             GunScript.open = true;
             HandScript.open = true;
             StartCoroutine(BreakDoor());
+            oneTimeOpen = true;
         }
     }
-
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+            inTrigger = false;
+    }
     IEnumerator BreakDoor()
     {
         yield return new WaitForSecondsRealtime(0.95f);
@@ -47,9 +59,11 @@ public class BreakAdmDoorScript : MonoBehaviour
         DoorRb.isKinematic = false;
         Destroy(DoorHinge);
         DoorRb.AddForce(-transform.forward * 150);
-        DoorRb.AddForce(-transform.forward * 1500 * Time.deltaTime);
+        DoorRb.AddForce(-transform.forward * 1000 * Time.deltaTime);
         yield return new WaitForSecondsRealtime(1f);
         breakingdoor = false;
+        yield return new WaitForSecondsRealtime(1f);
+        DoorRb.isKinematic = true;
         Destroy(this);
     }
 }

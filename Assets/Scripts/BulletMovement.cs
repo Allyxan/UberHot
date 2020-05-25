@@ -29,7 +29,7 @@ public class BulletMovement : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Player") && !(CompareTag("PlayerBullet")))
         {
-            // UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
         }
         Destroy(gameObject);
     }

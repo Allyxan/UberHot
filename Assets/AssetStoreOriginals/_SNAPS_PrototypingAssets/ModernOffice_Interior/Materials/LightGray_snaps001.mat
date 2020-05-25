@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Glossiness: 0.433
-    - _Metallic: 0
+    - _Glossiness: 0.16
+    - _Metallic: 0.38
     m_Colors:
-    - _Color: {r: 1, g: 0.9669811, b: 0.9669811, a: 1}
+    - _Color: {r: 0.6509434, g: 0.6478729, b: 0.6478729, a: 1}
