@@ -11,8 +11,6 @@ public class GunScript : MonoBehaviour
     public static bool pickup = false;
     public static bool open = false;
     public static bool doing = true;
-    public static bool bb1 = false;
-    public static bool bb = false;
 
 
 
@@ -32,15 +30,7 @@ public class GunScript : MonoBehaviour
             {
                 anim = GetComponent<Animator>();
                 anim.SetBool("state", true);
-
-                if (bb == true)
-                {
-                    anim.SetBool("bb", true);
-                } else
-                {
-                    anim.SetBool("bb", false);
-                }
-
+ 
                 if (HandScript.doing == true)
                 {
                     if (throww == true)
@@ -66,11 +56,6 @@ public class GunScript : MonoBehaviour
                     {
                         anim.SetTrigger("open");
                         open = false;
-                    }
-                    if (bb1 == true)
-                    {
-                        anim.SetTrigger("bb1");
-                        bb1 = false;
                     }
                 }
             }
