@@ -149,7 +149,7 @@ public class WeaponScript : MonoBehaviour
     }
     IEnumerator Throw2()
     {
-        float speed = 3;
+        float speed = 4;
         float original_delay = 1.15f;
         float delay = original_delay / speed + 0.05f;
         GunScript.throww = true;
