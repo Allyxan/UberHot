@@ -43,6 +43,7 @@ public class HandScript : MonoBehaviour
                 anim.SetTrigger("open");
                 HandScript.instance.anim.SetTrigger("open");
                 open = false;
+                GunScript.open = false;
             }
         }
     }
