@@ -97,6 +97,13 @@ public class Controller : MonoBehaviour
         Vector3 move = Vector3.zero;
         if (!m_IsPaused && !LockControl)
         {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                testAnim = true;
+                StartCoroutine(PlaySecretKey());
+            }
+
+
             if ((BreakResDoorScript.breakingdoor == false) & (BreakAdmDoorScript.breakingdoor == false))
             {
                 if (testAnim == false)
@@ -172,4 +179,9 @@ public class Controller : MonoBehaviour
         Cursor.lockState = display ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = display;
     }*/
+    IEnumerator PlaySecretKey()
+    {
+        yield return new WaitForSecondsRealtime(5f);
+        testAnim = false;
+    }
 }

@@ -38,7 +38,7 @@ public class BreakResDoorScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player" && breakResseptionDoor == false)
+        if (other.tag == "Player" && breakResseptionDoor == false)
             inTrigger = true;
     }
     private void OnTriggerStay(Collider other)
@@ -59,13 +59,13 @@ public class BreakResDoorScript : MonoBehaviour
     }
     IEnumerator BreakDoor()
     {
-        yield return new WaitForSecondsRealtime(0.95f);
+        yield return new WaitForSeconds(0.95f);
         audio.PlayOneShot(BreakDoorSound, 0.7F);
         DoorRb.isKinematic = false;
         Destroy(DoorHinge);
         DoorRb.AddForce(-transform.forward * 150);
         DoorRb.AddForce(-transform.forward * 1500 * Time.deltaTime);
-        yield return new WaitForSecondsRealtime(0.6f);
+        yield return new WaitForSeconds(0.6f);
         breakingdoor = false;
         breakResseptionDoor = true;
         DoorRb.isKinematic = true;

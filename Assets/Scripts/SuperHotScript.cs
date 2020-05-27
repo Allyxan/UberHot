@@ -37,22 +37,34 @@ public class SuperHotScript : MonoBehaviour
         instance = this;
         if (weaponHolder.GetComponentInChildren<WeaponScript>() != null)
             weapon = weaponHolder.GetComponentInChildren<WeaponScript>();
+        LastTime = Time.timeScale;
     }
 
     void Update()
     {
-        LastTime = Time.timeScale;
         if (Cursor.visible == false)
         {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                if (testAnim == false)
+                {
+                    LastTime = Time.timeScale;
+                    Time.timeScale = 1;
+                    StopCoroutine(PlaySecretKey());
+                    StartCoroutine(PlaySecretKey());
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.R))
             {
                 UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
                 BreakResDoorScript.breakingdoor = false;
                 BreakAdmDoorScript.breakingdoor = false;
-                testAnim = false;
+                //StopCoroutine(PlaySecretKey());
             }
             if (testAnim == false)
             {
+                Time.timeScale = LastTime;
                 if ((BreakResDoorScript.breakingdoor == false) & (BreakAdmDoorScript.breakingdoor == false))
                 {
 
@@ -127,6 +139,7 @@ public class SuperHotScript : MonoBehaviour
                     forPitch = Time.timeScale;
                     if (forPitch < 0.2f) forPitch = 0.2f;
                     master.SetFloat("masterPitch", forPitch);
+                    LastTime = Time.timeScale;
                 }
                 else
                 {
@@ -156,8 +169,8 @@ public class SuperHotScript : MonoBehaviour
 
     IEnumerator PlaySecretKey()
     {
+        testAnim = true;
         yield return new WaitForSecondsRealtime(5f);
         testAnim = false;
-        Time.timeScale = LastTime;
     }
 }

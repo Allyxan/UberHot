@@ -41,10 +41,14 @@ public class HandScript : MonoBehaviour
             if (open == true)
             {
                 anim.SetTrigger("open");
-                HandScript.instance.anim.SetTrigger("open");
                 open = false;
-                GunScript.open = false;
+                StartCoroutine(stopping());
             }
         }
+    }
+    IEnumerator stopping()
+    {
+        yield return new WaitForSecondsRealtime(0.2f);
+        GunScript.open = false;
     }
 }
