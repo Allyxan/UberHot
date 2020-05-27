@@ -14,7 +14,7 @@ public class EnemyScript : MonoBehaviour
     public static EnemyScript instance;
     public Transform weaponHolder;
     GameObject Camera;
-    public float distance = 3.0f;
+    public float distance = 0.5f;
     bool readyToShoot;
     NavMeshAgent navMeshAgent;
     int layerMask; int saveIterator;
@@ -22,6 +22,7 @@ public class EnemyScript : MonoBehaviour
     public AudioClip EnemyDeath;
     public AudioClip HitByThrowable;
     public AudioSource audio;
+    public int lifes;
 
     void Start()
     {
@@ -34,6 +35,7 @@ public class EnemyScript : MonoBehaviour
             weaponHolder.GetComponentInChildren<WeaponScript>().active = false;
         layerMask = 1 << 15;
         audio = GetComponent<AudioSource>();
+        lifes = 2;
     }
 
     void Update()
@@ -228,5 +230,25 @@ public class EnemyScript : MonoBehaviour
         testAnim = false;
         anim.SetBool("K", false);
         navMeshAgent.enabled = true;
+    }
+
+    public void ChangeMaterial(int lifes)
+    {
+        // this.GetComponentsInChildren<Renderer>().material = material1;
+        SkinnedMeshRenderer[] clr = GetComponentsInChildren<SkinnedMeshRenderer>();
+        //clr[1].material = material1;
+        Debug.Log("fff");
+        foreach (SkinnedMeshRenderer r in clr)
+        {
+            if (lifes == 1)
+            {
+                Debug.Log("fd");
+                r.material.color = Color.grey;
+            }
+            if (lifes == 0)
+            {
+                r.material.color = Color.black;
+            }
+        }
     }
 }

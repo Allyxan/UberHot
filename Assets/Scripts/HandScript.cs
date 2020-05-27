@@ -8,9 +8,11 @@ public class HandScript : MonoBehaviour
     public Animator anim;
     public static bool open = false;
     public static bool idle = false;
+    public static bool bbRight = false;
     int IdleNoGun;
     int IdleGun;
     public static bool doing = false;
+    public static bool bb = false;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +29,14 @@ public class HandScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (anim.GetCurrentAnimatorStateInfo(0).fullPathHash == IdleNoGun)
+        {
+            bb = true;
+        }
+        else
+        {
+            bb = false;
+        }
         if ((anim.GetCurrentAnimatorStateInfo(0).fullPathHash == IdleNoGun) || (anim.GetCurrentAnimatorStateInfo(0).fullPathHash == IdleGun))
         {
             doing = true;
@@ -43,6 +53,11 @@ public class HandScript : MonoBehaviour
                 anim.SetTrigger("open");
                 open = false;
                 StartCoroutine(stopping());
+            }
+            if (bbRight == true)
+            {
+                    anim.SetTrigger("bb right");
+                bbRight = false;
             }
         }
     }

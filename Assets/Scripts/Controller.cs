@@ -25,6 +25,7 @@ public class Controller : MonoBehaviour
     [Header("Audio")]
     public AudioClip JumpingAudioClip;
     public AudioClip LandingAudioClip;
+    public LayerMask Enemy;
 
     float m_VerticalSpeed = 0.0f;
     bool m_IsPaused = false;
@@ -183,5 +184,35 @@ public class Controller : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(5f);
         testAnim = false;
+    }
+
+    public void BB()
+    {
+        if (SuperHotScript.pickup == false)
+        {
+            HandScript.bbRight = true;
+            StartCoroutine(BB2());
+        }
+    }
+    IEnumerator BB2()
+    {
+        //0.95
+        yield return new WaitForSeconds(0.188f);
+        RaycastHit hit;
+
+        if (Physics.Raycast(Camera.main.transform.position + Camera.main.transform.forward * 0.5f, Camera.main.transform.forward, out hit, 2f))
+        {
+            BodyPartScript bp = hit.transform.GetComponentInChildren<BodyPartScript>();
+            if (bp.enemy.tag != "DeadEnemy")
+            {
+                bp.enemy.lifes--;
+
+                bp.enemy.ChangeMaterial(bp.enemy.lifes);
+                if (bp.enemy.lifes < 1)
+                {
+                    bp.enemy.Ragdoll();
+                }
+            }
+        }
     }
 }

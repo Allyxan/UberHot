@@ -16,6 +16,8 @@ public class SuperHotScript : MonoBehaviour
     public Transform bulletSpawner;
     public float forPitch;
     public AudioMixer master;
+    public static bool pickup = false;
+
 
     [Header("Weapon")]
     public WeaponScript weapon;
@@ -55,6 +57,21 @@ public class SuperHotScript : MonoBehaviour
                 }
             }
 
+
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
+            {
+                if (Input.GetMouseButtonDown(0) && weapon == null)
+                {
+                    if (HandScript.doing == true)
+                    {
+                        pickup = true;
+                        hit.transform.GetComponent<WeaponScript>().Pickup();
+                        hit.transform.GetComponent<WeaponScript>().tag = "Player";
+                    }
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.R))
             {
                 UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
@@ -74,11 +91,18 @@ public class SuperHotScript : MonoBehaviour
                         {
                             if (HandScript.doing == true)
                             {
-                                if (weapon != null && weapon.reloading == false)
+                                if (HandScript.bb == false)
                                 {
-                                    StopCoroutine(ActionE(.03f));
-                                    StartCoroutine(ActionE(.03f));
-                                    weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .5f, Camera.main.transform.rotation, false);
+                                    if (weapon != null && weapon.reloading == false)
+                                    {
+                                        StopCoroutine(ActionE(.03f));
+                                        StartCoroutine(ActionE(.03f));
+                                        weapon.Shoot(SpawnPos() + Camera.main.transform.forward * .5f, Camera.main.transform.rotation, false);
+                                    }
+                                }
+                                else
+                                {
+                                    Controller.Instance.BB();
                                 }
                             }
                         }
@@ -111,19 +135,6 @@ public class SuperHotScript : MonoBehaviour
 
                      }*/
 
-                    RaycastHit hit;
-                    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3, weaponLayer))
-                    {
-                        if (Input.GetMouseButtonDown(0) && weapon == null)
-                        {
-                            if (HandScript.doing == true)
-                            {
-                                hit.transform.GetComponent<WeaponScript>().Pickup();
-                                hit.transform.GetComponent<WeaponScript>().tag = "Player";
-                            }
-                        }
-                    }
-
                     float x = Input.GetAxisRaw("Horizontal");
                     float y = Input.GetAxisRaw("Vertical");
 
@@ -146,6 +157,7 @@ public class SuperHotScript : MonoBehaviour
                     Time.timeScale = 1;
                 }
             }
+            pickup = false;
         }
     }
 

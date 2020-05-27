@@ -102,7 +102,6 @@ public class WeaponScript : MonoBehaviour
     {
         if (!active)
             return;
-
         SuperHotScript.instance.weapon = this;
         GunScript.pickup = true;
         ChangeSettings();
