@@ -54,15 +54,15 @@ public class BreakAdmDoorScript : MonoBehaviour
     }
     IEnumerator BreakDoor()
     {
-        yield return new WaitForSecondsRealtime(0.95f);
+        yield return new WaitForSeconds(0.95f);
         ZvukDver.Play();
         DoorRb.isKinematic = false;
         Destroy(DoorHinge);
         DoorRb.AddForce(-transform.forward * 150);
         DoorRb.AddForce(-transform.forward * 1000 * Time.deltaTime);
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSeconds(1f);
         breakingdoor = false;
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSeconds(1f);
         DoorRb.isKinematic = true;
         Destroy(this);
     }
